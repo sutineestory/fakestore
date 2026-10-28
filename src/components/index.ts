@@ -21,6 +21,7 @@ export {
   type SegmentedControlOption,
   type SegmentedControlProps,
 } from './SegmentedControl';
+export { Skeleton, type SkeletonProps } from './Skeleton';
 export { Stack, type StackProps } from './Stack';
 export { Text, type TextProps } from './Text';
 export { TextField, type TextFieldProps } from './TextField';
