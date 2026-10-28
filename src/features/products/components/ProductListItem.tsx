@@ -1,12 +1,12 @@
-import { StarIcon } from 'lucide-react-native';
 import { memo, useCallback } from 'react';
 import { Image, View } from 'react-native';
 
-import { Card, Icon, Stack, Text } from '@/components';
-import { useLanguage, useTranslation } from '@/i18n';
-import { makeStyles, useTheme } from '@/theme';
+import { Card, Stack, Text } from '@/components';
+import { useLanguage } from '@/i18n';
+import { makeStyles } from '@/theme';
 import { formatPrice } from '../formatPrice';
 import type { Product } from '../types';
+import { ProductRating } from './ProductRating';
 
 const THUMBNAIL_SIZE = 72;
 
@@ -17,11 +17,8 @@ type ProductListItemProps = {
 };
 
 function ProductListItemBase({ product, onPress }: ProductListItemProps) {
-  const t = useTranslation();
   const { language } = useLanguage();
-  const { colors } = useTheme();
   const styles = useStyles();
-  const { rate, count } = product.rating;
   const handlePress = useCallback(
     () => onPress(product.id),
     [onPress, product.id],
@@ -42,23 +39,7 @@ function ProductListItemBase({ product, onPress }: ProductListItemProps) {
             {product.title}
           </Text>
           <Stack direction="row" justify="space-between" align="center">
-            <Stack
-              direction="row"
-              gap="xs"
-              align="center"
-              accessible
-              accessibilityLabel={t.productDetail.rating(rate, count)}
-            >
-              <Icon
-                icon={StarIcon}
-                color="warning"
-                fill={colors.warning}
-                size="sm"
-              />
-              <Text variant="caption" color="textMuted">
-                {t.productList.rating(rate, count)}
-              </Text>
-            </Stack>
+            <ProductRating rating={product.rating} />
             <Text variant="label" color="primary">
               {formatPrice(product.price, language)}
             </Text>
