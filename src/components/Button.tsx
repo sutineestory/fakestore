@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -14,6 +15,8 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export type ButtonProps = Omit<PressableProps, 'children' | 'style'> & {
   title: string;
+  /** Shown before the title, e.g. an `Icon`. */
+  icon?: ReactNode;
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
@@ -52,6 +55,7 @@ function getVariantColors(colors: ColorTokens, variant: ButtonVariant) {
 
 export function Button({
   title,
+  icon,
   variant = 'primary',
   size = 'md',
   loading = false,
@@ -84,13 +88,16 @@ export function Button({
       {loading ? (
         <ActivityIndicator color={foreground} />
       ) : (
-        <Text
-          variant={size === 'sm' ? 'caption' : 'label'}
-          style={[styles.label, { color: foreground }]}
-          numberOfLines={1}
-        >
-          {title}
-        </Text>
+        <>
+          {icon}
+          <Text
+            variant={size === 'sm' ? 'caption' : 'label'}
+            style={[styles.label, { color: foreground }]}
+            numberOfLines={1}
+          >
+            {title}
+          </Text>
+        </>
       )}
     </Pressable>
   );
@@ -101,6 +108,7 @@ const useStyles = makeStyles(({ spacing, radii }) => ({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    gap: spacing.sm,
     borderWidth: 1,
     borderRadius: radii.md,
   },
