@@ -58,6 +58,7 @@ export const th: Messages = {
   productDetail: {
     title: 'รายละเอียดสินค้า',
     addToCart: 'เพิ่มลงตะกร้า',
+    viewCart: 'อยู่ในตะกร้า · ดูตะกร้า',
     viewImage: 'ดูรูปขนาดใหญ่',
     closeImage: 'ปิด',
     loading: 'กำลังโหลดสินค้า',

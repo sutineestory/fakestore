@@ -58,6 +58,7 @@ export const en = {
   productDetail: {
     title: 'Product details',
     addToCart: 'Add to cart',
+    viewCart: 'In cart · View cart',
     viewImage: 'View larger image',
     closeImage: 'Close',
     loading: 'Loading the product',

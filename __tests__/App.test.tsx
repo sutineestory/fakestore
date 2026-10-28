@@ -185,6 +185,33 @@ test('shows a cart button in the Products and detail headers', async () => {
   });
 });
 
+test('adds a product to the cart and removes it there', async () => {
+  const renderer = await renderApp();
+
+  await press(findTab(renderer.root, 'Products'));
+  await press(findButton(renderer.root, 'Product 2'));
+  await press(findButton(renderer.root, 'Add to cart'));
+
+  // The detail header's cart button is the one on top.
+  const cartButtons = renderer.root.findAll(
+    node =>
+      node.props.accessibilityLabel === 'Cart, 1 item' &&
+      typeof node.props.onPress === 'function',
+  );
+  await press(cartButtons[cartButtons.length - 1]);
+
+  expect(hasText(renderer.root, '1 item')).toBe(true);
+  expect(hasText(renderer.root, 'Submit order')).toBe(true);
+
+  await press(findLabelled(renderer.root, 'Remove Product 2 from the cart'));
+
+  expect(hasText(renderer.root, 'Your cart is empty.')).toBe(true);
+
+  await act(async () => {
+    renderer.unmount();
+  });
+});
+
 test('favorites a product from its detail screen', async () => {
   const renderer = await renderApp();
 

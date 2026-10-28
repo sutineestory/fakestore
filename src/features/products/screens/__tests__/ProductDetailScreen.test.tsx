@@ -24,6 +24,10 @@ const mockFetchProduct = jest.mocked(fetchProduct);
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+function OpenedCart() {
+  return <Text>Opened cart</Text>;
+}
+
 let renderer: Renderer | undefined;
 
 async function renderDetail(id: number, options?: RenderOptions) {
@@ -34,6 +38,7 @@ async function renderDetail(id: number, options?: RenderOptions) {
         component={ProductDetailScreen}
         initialParams={{ id }}
       />
+      <Stack.Screen name="Cart" component={OpenedCart} />
     </Stack.Navigator>,
     options,
   );
@@ -128,19 +133,27 @@ test('opens the image full screen and closes it again', async () => {
   expect(viewer().props.visible).toBe(false);
 });
 
-test('offers an add-to-cart button that does nothing yet', async () => {
+test('adds the product to the cart, then offers to view it', async () => {
   const root = await renderDetail(3);
 
-  const addToCart = root.find(
-    node =>
-      node.props.accessibilityRole === 'button' &&
-      typeof node.type !== 'string' &&
-      node
-        .findAllByType(Text)
-        .some(text => text.props.children === 'Add to cart'),
-  );
-  expect(addToCart.props.accessibilityState).toMatchObject({ disabled: false });
-  expect(addToCart.props.onPress).toBeUndefined();
+  await act(async () => {
+    findButton(root, 'Add to cart').props.onPress();
+  });
+
+  expect(texts(root)).not.toContain('Add to cart');
+
+  await act(async () => {
+    findButton(root, 'In cart · View cart').props.onPress();
+  });
+
+  expect(texts(root)).toContain('Opened cart');
+});
+
+test('offers to view the cart when the product is already in it', async () => {
+  const root = await renderDetail(3, { initialCartIds: [3] });
+
+  expect(texts(root)).toContain('In cart · View cart');
+  expect(texts(root)).not.toContain('Add to cart');
 });
 
 test('toggles the product as a favorite, apart from Home item 3', async () => {

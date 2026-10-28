@@ -12,6 +12,7 @@ import {
   Stack,
   Text,
 } from '@/components';
+import { useCart } from '@/features/cart';
 import { FavoriteIconButton } from '@/features/favorites';
 import { useLanguage, useTranslation } from '@/i18n';
 import type { RootStackScreenProps } from '@/navigation';
@@ -26,12 +27,18 @@ import { productFavoriteId } from '../productFavoriteId';
 const IMAGE_HEIGHT = 280;
 
 export function ProductDetailScreen({
+  navigation,
   route,
 }: RootStackScreenProps<'ProductDetail'>) {
   const t = useTranslation();
   const { language } = useLanguage();
   const styles = useStyles();
-  const { status, product, retry } = useProduct(route.params.id);
+  const { id } = route.params;
+  const { status, product, retry } = useProduct(id);
+  const cart = useCart();
+  const inCart = cart.ids.includes(id);
+  const addToCart = useCallback(() => cart.add(id), [cart, id]);
+  const openCart = useCallback(() => navigation.navigate('Cart'), [navigation]);
   const [viewingImage, setViewingImage] = useState(false);
   const openImage = useCallback(() => setViewingImage(true), []);
   const closeImage = useCallback(() => setViewingImage(false), []);
@@ -57,10 +64,16 @@ export function ProductDetailScreen({
       scroll
       edges={['left', 'right', 'bottom']}
       footer={
-        // Placeholder until there is a cart to add to.
         <Button
-          title={t.productDetail.addToCart}
-          icon={<Icon icon={ShoppingCartIcon} color="onPrimary" />}
+          title={inCart ? t.productDetail.viewCart : t.productDetail.addToCart}
+          variant={inCart ? 'secondary' : 'primary'}
+          icon={
+            <Icon
+              icon={ShoppingCartIcon}
+              color={inCart ? 'text' : 'onPrimary'}
+            />
+          }
+          onPress={inCart ? openCart : addToCart}
         />
       }
     >
