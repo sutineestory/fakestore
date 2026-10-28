@@ -6,11 +6,10 @@ import {
   type ListRenderItem,
 } from 'react-native';
 
-import { Screen, Stack, Text, TextField } from '@/components';
+import { RequestStatus, Screen, Stack, Text, TextField } from '@/components';
 import { useTranslation } from '@/i18n';
 import { makeStyles, useTheme } from '@/theme';
 import { SampleListItem } from '../components/SampleListItem';
-import { SampleListStatus } from '../components/SampleListStatus';
 import { filterSampleItems } from '../filterSampleItems';
 import { useSampleItems } from '../hooks/useSampleItems';
 import type { SampleItem } from '../types';
@@ -64,9 +63,12 @@ export function SampleScreen() {
         }
         ListHeaderComponentStyle={styles.header}
         ListEmptyComponent={
-          <SampleListStatus
+          <RequestStatus
             status={state.status}
-            query={search}
+            loadingLabel={t.sample.loading}
+            errorMessage={t.sample.error}
+            retryLabel={t.common.retry}
+            emptyMessage={search ? t.sample.noResults(search) : t.sample.empty}
             onRetry={retry}
           />
         }

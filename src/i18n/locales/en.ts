@@ -1,5 +1,8 @@
 /** Source of truth for message keys; every other locale must match this shape. */
 export const en = {
+  common: {
+    retry: 'Try again',
+  },
   tabs: {
     home: 'Home',
     products: 'Products',
@@ -53,7 +56,6 @@ export const en = {
     search: 'Search items',
     loading: 'Loading items',
     error: 'Couldn’t load the items.',
-    retry: 'Try again',
     empty: 'No items yet.',
     noResults: (query: string) => `No items match “${query}”.`,
   },

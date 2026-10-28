@@ -1,24 +1,29 @@
 import { ActivityIndicator } from 'react-native';
 
-import { Button, Stack, Text } from '@/components';
-import { useTranslation } from '@/i18n';
 import { makeStyles, useTheme } from '@/theme';
-import type { SampleItemsState } from '../hooks/useSampleItems';
+import { Button } from './Button';
+import { Stack } from './Stack';
+import { Text } from './Text';
 
-type SampleListStatusProps = {
-  status: SampleItemsState['status'];
-  /** Trimmed search text, so an empty result can say what didn't match. */
-  query: string;
+export type RequestStatusProps = {
+  status: 'loading' | 'error' | 'success';
+  loadingLabel: string;
+  errorMessage: string;
+  retryLabel: string;
+  /** Shown once the request succeeded but there is nothing to show. */
+  emptyMessage: string;
   onRetry: () => void;
 };
 
-/** Fills the list while it has no rows: loading, failed, or nothing found. */
-export function SampleListStatus({
+/** Fills a screen or list while it has no content: loading, failed, or empty. */
+export function RequestStatus({
   status,
-  query,
+  loadingLabel,
+  errorMessage,
+  retryLabel,
+  emptyMessage,
   onRetry,
-}: SampleListStatusProps) {
-  const t = useTranslation();
+}: RequestStatusProps) {
   const { colors } = useTheme();
   const styles = useStyles();
 
@@ -26,7 +31,7 @@ export function SampleListStatus({
     case 'loading':
       return (
         <ActivityIndicator
-          accessibilityLabel={t.sample.loading}
+          accessibilityLabel={loadingLabel}
           color={colors.primary}
           style={styles.container}
         />
@@ -35,19 +40,15 @@ export function SampleListStatus({
       return (
         <Stack gap="md" align="center" style={styles.container}>
           <Text color="textMuted" align="center">
-            {t.sample.error}
+            {errorMessage}
           </Text>
-          <Button
-            title={t.sample.retry}
-            variant="secondary"
-            onPress={onRetry}
-          />
+          <Button title={retryLabel} variant="secondary" onPress={onRetry} />
         </Stack>
       );
     case 'success':
       return (
         <Text color="textMuted" align="center" style={styles.container}>
-          {query ? t.sample.noResults(query) : t.sample.empty}
+          {emptyMessage}
         </Text>
       );
   }

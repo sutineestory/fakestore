@@ -4,30 +4,27 @@ import ReactTestRenderer, {
   type ReactTestRenderer as Renderer,
 } from 'react-test-renderer';
 
-import { LanguageProvider, type Language } from '@/i18n';
 import { ThemeProvider } from '@/theme';
-import type { SampleItemsState } from '../../hooks/useSampleItems';
-import { SampleListStatus } from '../SampleListStatus';
+import { RequestStatus, type RequestStatusProps } from '../RequestStatus';
 
 const { act } = ReactTestRenderer;
 
-type RenderOptions = {
-  query?: string;
-  onRetry?: () => void;
-  language?: Language;
-};
-
 async function renderStatus(
-  status: SampleItemsState['status'],
-  { query = '', onRetry = jest.fn(), language }: RenderOptions = {},
+  status: RequestStatusProps['status'],
+  onRetry: () => void = jest.fn(),
 ) {
   let renderer!: Renderer;
   await act(async () => {
     renderer = ReactTestRenderer.create(
       <ThemeProvider>
-        <LanguageProvider initialLanguage={language}>
-          <SampleListStatus status={status} query={query} onRetry={onRetry} />
-        </LanguageProvider>
+        <RequestStatus
+          status={status}
+          loadingLabel="Loading things"
+          errorMessage="Couldn’t load the things."
+          retryLabel="Again"
+          emptyMessage="Nothing here."
+          onRetry={onRetry}
+        />
       </ThemeProvider>,
     );
   });
@@ -50,15 +47,16 @@ test('shows a labelled spinner while loading', async () => {
   const root = await renderStatus('loading');
 
   const spinner = root.findByType(ActivityIndicator);
-  expect(spinner.props.accessibilityLabel).toBe('Loading items');
+  expect(spinner.props.accessibilityLabel).toBe('Loading things');
+  expect(textsOf(root)).toEqual([]);
   expect(findButtons(root)).toHaveLength(0);
 });
 
 test('explains a failure and retries on press', async () => {
   const onRetry = jest.fn();
-  const root = await renderStatus('error', { onRetry });
+  const root = await renderStatus('error', onRetry);
 
-  expect(textsOf(root)).toEqual(['Couldn’t load the items.', 'Try again']);
+  expect(textsOf(root)).toEqual(['Couldn’t load the things.', 'Again']);
 
   const [retry] = findButtons(root);
   await act(async () => {
@@ -68,24 +66,10 @@ test('explains a failure and retries on press', async () => {
   expect(onRetry).toHaveBeenCalledTimes(1);
 });
 
-test('says the list is empty when there is no search', async () => {
+test('shows the empty message once loaded', async () => {
   const root = await renderStatus('success');
 
-  expect(textsOf(root)).toEqual(['No items yet.']);
+  expect(textsOf(root)).toEqual(['Nothing here.']);
   expect(root.findAllByType(ActivityIndicator)).toHaveLength(0);
-});
-
-test('names the search that found nothing', async () => {
-  const root = await renderStatus('success', { query: 'cherry' });
-
-  expect(textsOf(root)).toEqual(['No items match “cherry”.']);
-});
-
-test('uses the active language', async () => {
-  const root = await renderStatus('success', {
-    query: 'cherry',
-    language: 'th',
-  });
-
-  expect(textsOf(root)).toEqual(['ไม่พบรายการที่ตรงกับ “cherry”']);
+  expect(findButtons(root)).toHaveLength(0);
 });

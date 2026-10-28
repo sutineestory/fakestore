@@ -9,7 +9,7 @@ import ReactTestRenderer, {
   type ReactTestRenderer as Renderer,
 } from 'react-test-renderer';
 
-import { LanguageProvider } from '@/i18n';
+import { LanguageProvider, type Language } from '@/i18n';
 import { ThemeProvider } from '@/theme';
 import { fetchSampleItems } from '../../services/sampleService';
 import type { SampleItem } from '../../types';
@@ -35,11 +35,11 @@ function nextRequest() {
 
 let renderer: Renderer | undefined;
 
-async function renderScreen() {
+async function renderScreen(language?: Language) {
   await act(async () => {
     renderer = ReactTestRenderer.create(
       <ThemeProvider>
-        <LanguageProvider>
+        <LanguageProvider initialLanguage={language}>
           <SampleScreen />
         </LanguageProvider>
       </ThemeProvider>,
@@ -48,9 +48,12 @@ async function renderScreen() {
   return (renderer as Renderer).root;
 }
 
-async function renderLoadedScreen(items: SampleItem[] = ITEMS) {
+async function renderLoadedScreen(
+  items: SampleItem[] = ITEMS,
+  language?: Language,
+) {
   const request = nextRequest();
-  const root = await renderScreen();
+  const root = await renderScreen(language);
   await act(async () => request.resolve(items));
   return root;
 }
@@ -116,6 +119,14 @@ test('says when a search finds nothing', async () => {
 
   expect(titlesShown(root)).toEqual([]);
   expect(hasText(root, 'No items match “cherry”.')).toBe(true);
+});
+
+test('says what found nothing in the active language', async () => {
+  const root = await renderLoadedScreen(ITEMS, 'th');
+
+  await search(root, 'cherry');
+
+  expect(hasText(root, 'ไม่พบรายการที่ตรงกับ “cherry”')).toBe(true);
 });
 
 test('says when there are no items at all', async () => {

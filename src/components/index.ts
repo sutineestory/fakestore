@@ -7,6 +7,7 @@ export {
 export { Card, type CardProps } from './Card';
 export { Divider } from './Divider';
 export { Icon, type IconProps } from './Icon';
+export { RequestStatus, type RequestStatusProps } from './RequestStatus';
 export { Screen, type ScreenProps } from './Screen';
 export {
   SegmentedControl,

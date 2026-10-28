@@ -1,6 +1,9 @@
 import type { Messages } from './en';
 
 export const th: Messages = {
+  common: {
+    retry: 'ลองอีกครั้ง',
+  },
   tabs: {
     home: 'หน้าแรก',
     products: 'สินค้า',
@@ -53,7 +56,6 @@ export const th: Messages = {
     search: 'ค้นหารายการ',
     loading: 'กำลังโหลดรายการ',
     error: 'โหลดรายการไม่สำเร็จ',
-    retry: 'ลองอีกครั้ง',
     empty: 'ยังไม่มีรายการ',
     noResults: query => `ไม่พบรายการที่ตรงกับ “${query}”`,
   },
