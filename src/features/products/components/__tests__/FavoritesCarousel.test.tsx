@@ -66,8 +66,12 @@ afterEach(async () => {
 test('is announced as the Favorites header', async () => {
   const root = await renderCarousel();
 
-  const header = root.find(node => node.props.accessibilityRole === 'header');
-  expect(header.props.accessibilityLabel).toBe('Favorites');
+  const header = root.find(
+    node =>
+      node.props.accessibilityRole === 'header' &&
+      typeof node.type === 'string',
+  );
+  expect(header.props.children).toBe('Favorites');
 });
 
 test('explains how to add favorites when there are none', async () => {

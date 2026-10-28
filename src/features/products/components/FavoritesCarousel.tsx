@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import { Button, Stack, Text } from '@/components';
-import { FavoriteIndicator, useFavorites } from '@/features/favorites';
+import { useFavorites } from '@/features/favorites';
 import { useTranslation } from '@/i18n';
 import { useTheme } from '@/theme';
 import { useCachedProducts } from '../hooks/useCachedProducts';
@@ -27,17 +27,9 @@ export function FavoritesCarousel({ onPressProduct }: FavoritesCarouselProps) {
 
   return (
     <Stack gap="md">
-      <Stack
-        direction="row"
-        gap="sm"
-        align="center"
-        accessible
-        accessibilityRole="header"
-        accessibilityLabel={t.productList.favorites}
-      >
-        <Text variant="heading">{t.productList.favorites}</Text>
-        <FavoriteIndicator />
-      </Stack>
+      <Text variant="heading" accessibilityRole="header">
+        {t.productList.favorites}
+      </Text>
       {products.length > 0 ? (
         <FavoritesRow products={products} onPressProduct={onPressProduct} />
       ) : (
