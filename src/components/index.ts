@@ -5,6 +5,7 @@ export {
   type ButtonVariant,
 } from './Button';
 export { Card, type CardProps } from './Card';
+export { Chip, type ChipProps } from './Chip';
 export { Divider } from './Divider';
 export { Icon, type IconProps } from './Icon';
 export { ListSeparator } from './ListSeparator';

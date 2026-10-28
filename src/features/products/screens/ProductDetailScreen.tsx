@@ -1,6 +1,6 @@
 import { Image, View } from 'react-native';
 
-import { RequestStatus, Screen, Stack, Text } from '@/components';
+import { Chip, RequestStatus, Screen, Stack, Text } from '@/components';
 import { FavoriteButton } from '@/features/favorites';
 import { useLanguage, useTranslation } from '@/i18n';
 import type { RootStackScreenProps } from '@/navigation';
@@ -46,9 +46,7 @@ export function ProductDetailScreen({
         </View>
 
         <Stack gap="sm">
-          <Text variant="caption" color="textMuted" style={styles.category}>
-            {product.category}
-          </Text>
+          <Chip label={product.category} />
           <Text variant="heading">{product.title}</Text>
           <Text variant="heading" color="primary">
             {formatPrice(product.price, language)}
@@ -76,5 +74,4 @@ const useStyles = makeStyles(({ colors, spacing, radii }) => ({
     backgroundColor: colors.media,
   },
   image: { flex: 1 },
-  category: { textTransform: 'capitalize' },
 }));
