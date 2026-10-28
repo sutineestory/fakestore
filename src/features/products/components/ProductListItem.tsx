@@ -41,26 +41,28 @@ function ProductListItemBase({ product, onPress }: ProductListItemProps) {
           <Text variant="subheading" numberOfLines={2}>
             {product.title}
           </Text>
-          <Stack
-            direction="row"
-            gap="xs"
-            align="center"
-            accessible
-            accessibilityLabel={t.productDetail.rating(rate, count)}
-          >
-            <Icon
-              icon={StarIcon}
-              color="warning"
-              fill={colors.warning}
-              size="sm"
-            />
-            <Text variant="caption" color="textMuted">
-              {t.productList.rating(rate, count)}
+          <Stack direction="row" justify="space-between" align="center">
+            <Stack
+              direction="row"
+              gap="xs"
+              align="center"
+              accessible
+              accessibilityLabel={t.productDetail.rating(rate, count)}
+            >
+              <Icon
+                icon={StarIcon}
+                color="warning"
+                fill={colors.warning}
+                size="sm"
+              />
+              <Text variant="caption" color="textMuted">
+                {t.productList.rating(rate, count)}
+              </Text>
+            </Stack>
+            <Text variant="label" color="primary">
+              {formatPrice(product.price, language)}
             </Text>
           </Stack>
-          <Text variant="label" color="primary">
-            {formatPrice(product.price, language)}
-          </Text>
         </Stack>
       </Stack>
     </Card>
