@@ -1,11 +1,11 @@
-import { Text } from 'react-native';
+import { Animated, Text } from 'react-native';
 import ReactTestRenderer, {
   type ReactTestInstance,
   type ReactTestRenderer as Renderer,
 } from 'react-test-renderer';
 
 import { LanguageProvider, type Language } from '@/i18n';
-import { ThemeProvider } from '@/theme';
+import { lightTheme, ThemeProvider } from '@/theme';
 import { FavoritesProvider } from '../../FavoritesProvider';
 import { FavoriteButton } from '../FavoriteButton';
 
@@ -23,7 +23,7 @@ async function renderButtons(
   let renderer!: Renderer;
   await act(async () => {
     renderer = ReactTestRenderer.create(
-      <ThemeProvider>
+      <ThemeProvider initialPreference="light">
         <LanguageProvider initialLanguage={language}>
           <FavoritesProvider initialFavoriteIds={initialFavoriteIds}>
             {ids.map(id => (
@@ -51,6 +51,27 @@ async function press(button: ReactTestInstance) {
     button.props.onPress();
   });
 }
+
+function hasFilledHeart(button: ReactTestInstance) {
+  return (
+    button.findAll(node => node.props.fill === lightTheme.colors.favorite)
+      .length > 0
+  );
+}
+
+let spring: jest.SpyInstance;
+
+// The pop animation finishes on a timer.
+beforeEach(() => {
+  jest.useFakeTimers();
+  spring = jest.spyOn(Animated, 'spring');
+});
+
+afterEach(() => {
+  jest.runOnlyPendingTimers();
+  jest.useRealTimers();
+  spring.mockRestore();
+});
 
 test('offers to add an item that is not a favorite', async () => {
   const [button] = await renderButtons(['1']);
@@ -91,4 +112,30 @@ test('labels the button in the active language', async () => {
 
   expect(labelOf(add)).toBe('เพิ่มในรายการโปรด');
   expect(labelOf(remove)).toBe('นำออกจากรายการโปรด');
+});
+
+test('fills the heart once the item is a favorite', async () => {
+  const [button] = await renderButtons(['1']);
+
+  expect(hasFilledHeart(button)).toBe(false);
+
+  await press(button);
+
+  expect(hasFilledHeart(button)).toBe(true);
+});
+
+test('pops the heart when adding, not when removing', async () => {
+  const [button] = await renderButtons(['1']);
+
+  await press(button);
+  expect(spring).toHaveBeenCalledTimes(1);
+
+  await press(button);
+  expect(spring).toHaveBeenCalledTimes(1);
+});
+
+test('does not pop for an item that starts as a favorite', async () => {
+  await renderButtons(['1'], { initialFavoriteIds: ['1'] });
+
+  expect(spring).not.toHaveBeenCalled();
 });
