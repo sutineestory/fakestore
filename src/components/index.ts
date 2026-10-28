@@ -11,6 +11,7 @@ export { Divider } from './Divider';
 export { Icon, type IconProps } from './Icon';
 export { ImageViewer, type ImageViewerProps } from './ImageViewer';
 export { ListSeparator } from './ListSeparator';
+export { NoticeSheet, type NoticeSheetProps } from './NoticeSheet';
 export { PageDots, type PageDotsProps } from './PageDots';
 export { RefreshControl } from './RefreshControl';
 export { RequestStatus, type RequestStatusProps } from './RequestStatus';

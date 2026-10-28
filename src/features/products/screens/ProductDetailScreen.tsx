@@ -7,6 +7,7 @@ import {
   Chip,
   Icon,
   ImageViewer,
+  NoticeSheet,
   RequestStatus,
   Screen,
   Stack,
@@ -17,8 +18,8 @@ import { FavoriteIconButton } from '@/features/favorites';
 import { useLanguage, useTranslation } from '@/i18n';
 import type { RootStackScreenProps } from '@/navigation';
 import { makeStyles } from '@/theme';
-import { FavoritesFullSheet } from '../components/FavoritesFullSheet';
 import { ProductRating } from '../components/ProductRating';
+import { MAX_FAVORITE_PRODUCTS } from '../favoriteLimit';
 import { formatPrice } from '../formatPrice';
 import { useFavoriteProductLimit } from '../hooks/useFavoriteProductLimit';
 import { useProduct } from '../hooks/useProduct';
@@ -119,7 +120,13 @@ export function ProductDetailScreen({
         onClose={closeImage}
         closeLabel={t.productDetail.closeImage}
       />
-      <FavoritesFullSheet visible={limitReached} onClose={dismissLimit} />
+      <NoticeSheet
+        visible={limitReached}
+        title={t.favorites.fullTitle}
+        message={t.favorites.fullMessage(MAX_FAVORITE_PRODUCTS)}
+        okLabel={t.common.ok}
+        onClose={dismissLimit}
+      />
     </Screen>
   );
 }
