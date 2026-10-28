@@ -1,8 +1,8 @@
-import { ChevronRightIcon, StarIcon } from 'lucide-react-native';
+import { ChevronRightIcon } from 'lucide-react-native';
 import { StyleSheet } from 'react-native';
 
 import { Button, Card, Icon, Screen, Stack, Text } from '@/components';
-import { useFavorites } from '@/features/favorites';
+import { FavoriteIndicator, useFavorites } from '@/features/favorites';
 import { useTranslation, type Messages } from '@/i18n';
 import type { MainTabScreenProps } from '@/navigation';
 
@@ -42,13 +42,7 @@ export function HomeScreen({ navigation }: MainTabScreenProps<'Home'>) {
                     {description}
                   </Text>
                 </Stack>
-                {favoriteIds.has(item.id) && (
-                  <Icon
-                    icon={StarIcon}
-                    color="warning"
-                    accessibilityLabel={t.home.favorite}
-                  />
-                )}
+                {favoriteIds.has(item.id) && <FavoriteIndicator />}
                 <Icon icon={ChevronRightIcon} color="textMuted" />
               </Stack>
             </Card>

@@ -11,7 +11,6 @@ export const en = {
   home: {
     title: 'Welcome',
     subtitle: 'Tap a card to open the Details screen.',
-    favorite: 'Favorite',
     openSample: 'Open sample list',
     items: {
       gettingStarted: {
@@ -47,6 +46,7 @@ export const en = {
     title: 'Product details',
   },
   favorites: {
+    label: 'Favorite',
     add: 'Add to favorites',
     remove: 'Remove from favorites',
   },

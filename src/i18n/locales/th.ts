@@ -12,7 +12,6 @@ export const th: Messages = {
   home: {
     title: 'ยินดีต้อนรับ',
     subtitle: 'แตะการ์ดเพื่อเปิดหน้ารายละเอียด',
-    favorite: 'รายการโปรด',
     openSample: 'เปิดรายการตัวอย่าง',
     items: {
       gettingStarted: {
@@ -47,6 +46,7 @@ export const th: Messages = {
     title: 'รายละเอียดสินค้า',
   },
   favorites: {
+    label: 'รายการโปรด',
     add: 'เพิ่มในรายการโปรด',
     remove: 'นำออกจากรายการโปรด',
   },
