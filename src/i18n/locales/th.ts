@@ -42,6 +42,12 @@ export const th: Messages = {
     goBack: 'ย้อนกลับ',
     openSettings: 'เปิดการตั้งค่า',
   },
+  productList: {
+    loading: 'กำลังโหลดสินค้า',
+    error: 'โหลดสินค้าไม่สำเร็จ',
+    empty: 'ยังไม่มีสินค้า',
+    loadMoreError: 'โหลดสินค้าเพิ่มไม่สำเร็จ',
+  },
   productDetail: {
     title: 'รายละเอียดสินค้า',
   },

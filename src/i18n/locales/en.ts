@@ -42,6 +42,12 @@ export const en = {
     goBack: 'Go back',
     openSettings: 'Open Settings',
   },
+  productList: {
+    loading: 'Loading products',
+    error: 'Couldn’t load the products.',
+    empty: 'No products yet.',
+    loadMoreError: 'Couldn’t load more products.',
+  },
   productDetail: {
     title: 'Product details',
   },

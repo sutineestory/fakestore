@@ -134,6 +134,23 @@ test('switches to the Products tab', async () => {
   });
 });
 
+test('lists products from the store on the Products tab', async () => {
+  const renderer = await renderApp();
+
+  await press(findTab(renderer.root, 'Products'));
+
+  expect(mockFetch).toHaveBeenCalledWith(
+    'https://fakestoreapi.com/products?limit=10',
+    expect.anything(),
+  );
+  expect(hasText(renderer.root, 'Product 1')).toBe(true);
+  expect(hasText(renderer.root, '$1.50')).toBe(true);
+
+  await act(async () => {
+    renderer.unmount();
+  });
+});
+
 test('stars an item on Home once it is favorited on Details', async () => {
   const renderer = await renderApp();
 
