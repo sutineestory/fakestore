@@ -308,3 +308,24 @@ test('lists every hot deal again once the search is cleared', async () => {
 
   expect(listedIds(root)).toEqual(makeProducts(1, 20).map(p => p.id));
 });
+
+test('sorts every hot deal from the sort sheet', async () => {
+  const root = await renderLoadedScreen();
+
+  await act(async () => {
+    findButton(root, 'Sort').props.onPress();
+  });
+  const finishLoading = queueRemainingPages();
+  await act(async () => {
+    findButton(root, 'Price: high to low').props.onPress();
+  });
+  await finishLoading();
+
+  expect(listedIds(root)).toEqual(
+    makeProducts(1, 20)
+      .map(p => p.id)
+      .reverse(),
+  );
+  // Choosing an order closes the sheet.
+  expect(hasText(root, 'Price: high to low')).toBe(false);
+});

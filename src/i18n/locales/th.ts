@@ -55,6 +55,17 @@ export const th: Messages = {
     loadMoreError: 'โหลดสินค้าเพิ่มไม่สำเร็จ',
     search: 'ค้นหาดีลเด็ด',
     noResults: query => `ไม่พบดีลที่ตรงกับ “${query}”`,
+    sort: {
+      button: 'เรียงลำดับ',
+      title: 'เรียงตาม',
+      options: {
+        recommended: 'แนะนำ',
+        priceLowToHigh: 'ราคา: ต่ำไปสูง',
+        priceHighToLow: 'ราคา: สูงไปต่ำ',
+        rating: 'คะแนนสูงสุด',
+        title: 'ชื่อ: A ถึง Z',
+      },
+    },
     rating: (rate, count) => `${rate.toFixed(1)} (${count})`,
   },
   productDetail: {

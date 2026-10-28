@@ -55,6 +55,17 @@ export const en = {
     loadMoreError: 'Couldn’t load more products.',
     search: 'Search hot deals',
     noResults: (query: string) => `No hot deals match “${query}”.`,
+    sort: {
+      button: 'Sort',
+      title: 'Sort by',
+      options: {
+        recommended: 'Recommended',
+        priceLowToHigh: 'Price: low to high',
+        priceHighToLow: 'Price: high to low',
+        rating: 'Top rated',
+        title: 'Name: A to Z',
+      },
+    },
     rating: (rate: number, count: number) => `${rate.toFixed(1)} (${count})`,
   },
   productDetail: {

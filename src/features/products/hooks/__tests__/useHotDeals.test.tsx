@@ -128,3 +128,47 @@ test('lists everything again once the search is cleared', async () => {
 
   expect(idsOf(getDeals().products)).toEqual(idsOf(makeProducts(1, 10)));
 });
+
+test('starts in the API order', async () => {
+  const getDeals = await renderLoadedDeals();
+
+  expect(getDeals().sort).toBe('recommended');
+});
+
+test('puts every product in the chosen order once all pages are in', async () => {
+  const getDeals = await renderLoadedDeals();
+
+  const second = nextRequest();
+  await act(async () => getDeals().setSort('priceHighToLow'));
+
+  expect(idsOf(getDeals().products)).toEqual([10, 9, 8, 7, 6, 5, 4, 3, 2, 1]);
+
+  const third = nextRequest();
+  await act(async () => second.resolve(makeProducts(1, 20)));
+  await act(async () => third.resolve(makeProducts(1, 20)));
+
+  expect(getDeals().products[0].id).toBe(20);
+  expect(getDeals().products).toHaveLength(20);
+});
+
+test('sorts only the products that match the search', async () => {
+  const getDeals = await renderLoadedDeals();
+  nextRequest();
+
+  await act(async () => {
+    getDeals().setQuery('product 1');
+    getDeals().setSort('priceHighToLow');
+  });
+
+  expect(idsOf(getDeals().products)).toEqual([10, 1]);
+});
+
+test('goes back to the API order', async () => {
+  const getDeals = await renderLoadedDeals();
+  nextRequest();
+  await act(async () => getDeals().setSort('priceHighToLow'));
+
+  await act(async () => getDeals().setSort('recommended'));
+
+  expect(idsOf(getDeals().products)).toEqual(idsOf(makeProducts(1, 10)));
+});

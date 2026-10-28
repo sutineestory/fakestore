@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { FlatList, type ListRenderItem } from 'react-native';
 
 import {
@@ -16,6 +16,7 @@ import { FavoritesCarousel } from '../components/FavoritesCarousel';
 import { HotDealsHeader } from '../components/HotDealsHeader';
 import { ProductListFooter } from '../components/ProductListFooter';
 import { ProductListItem } from '../components/ProductListItem';
+import { ProductSortSheet } from '../components/ProductSortSheet';
 import { useHotDeals } from '../hooks/useHotDeals';
 import type { Product } from '../types';
 
@@ -38,7 +39,12 @@ export function ProductListScreen() {
     query,
     setQuery,
     search,
+    sort,
+    setSort,
   } = useHotDeals();
+  const [sorting, setSorting] = useState(false);
+  const openSort = useCallback(() => setSorting(true), []);
+  const closeSort = useCallback(() => setSorting(false), []);
 
   const openProduct = useCallback(
     (id: number) => navigation.navigate('ProductDetail', { id }),
@@ -61,12 +67,17 @@ export function ProductListScreen() {
           <Stack gap="lg">
             <FavoritesCarousel onPressProduct={openProduct} />
             <Divider />
-            <HotDealsHeader query={query} onChangeQuery={setQuery} />
+            <HotDealsHeader
+              query={query}
+              onChangeQuery={setQuery}
+              sort={sort}
+              onPressSort={openSort}
+            />
           </Stack>
         }
         ListHeaderComponentStyle={styles.header}
         ListEmptyComponent={
-          // The footer's spinner already shows while more pages are searched.
+          // The footer's spinner already shows while more pages load.
           loadingMore ? undefined : (
             <RequestStatus
               status={status}
@@ -95,6 +106,12 @@ export function ProductListScreen() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={refresh} />
         }
+      />
+      <ProductSortSheet
+        visible={sorting}
+        value={sort}
+        onChange={setSort}
+        onClose={closeSort}
       />
     </Screen>
   );
