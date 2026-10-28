@@ -1,4 +1,4 @@
-import { Image, Text } from 'react-native';
+import { Image, StyleSheet, Text } from 'react-native';
 import ReactTestRenderer, {
   type ReactTestRenderer as Renderer,
 } from 'react-test-renderer';
@@ -46,6 +46,10 @@ test('shows the image, a one-line title, the price and a heart', async () => {
     '$168.00',
   ]);
   expect(texts[0].props.numberOfLines).toBe(1);
+  expect(StyleSheet.flatten(texts[1].props.style)).toMatchObject({
+    fontWeight: '600',
+    textAlign: 'right',
+  });
   expect(
     root.findAll(node => node.props.accessibilityLabel === 'Favorite'),
   ).not.toHaveLength(0);

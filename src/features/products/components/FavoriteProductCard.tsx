@@ -46,7 +46,7 @@ function FavoriteProductCardBase({
           <Text variant="caption" numberOfLines={1}>
             {product.title}
           </Text>
-          <Text variant="caption" color="primary">
+          <Text variant="label" color="primary" align="right">
             {formatPrice(product.price, language)}
           </Text>
         </Stack>
