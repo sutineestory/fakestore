@@ -8,10 +8,13 @@ const { act } = ReactTestRenderer;
 
 type AnimatedFavorite = ReturnType<typeof useAnimatedFavorite>;
 
-async function renderAnimatedFavorite(initialFavoriteIds?: string[]) {
+async function renderAnimatedFavorite(
+  initialFavoriteIds?: string[],
+  beforeAdd?: () => boolean,
+) {
   let favorite!: AnimatedFavorite;
   function Probe() {
-    favorite = useAnimatedFavorite('1');
+    favorite = useAnimatedFavorite('1', beforeAdd);
     return null;
   }
 
@@ -63,4 +66,33 @@ test('removes the item without a pop', async () => {
 
   expect(favorite.get().isFavorite).toBe(false);
   expect(spring).not.toHaveBeenCalled();
+});
+
+test('does not add or pop when beforeAdd says no', async () => {
+  const beforeAdd = jest.fn(() => false);
+  const favorite = await renderAnimatedFavorite(undefined, beforeAdd);
+
+  await favorite.press();
+
+  expect(beforeAdd).toHaveBeenCalledTimes(1);
+  expect(favorite.get().isFavorite).toBe(false);
+  expect(spring).not.toHaveBeenCalled();
+});
+
+test('adds when beforeAdd allows it', async () => {
+  const favorite = await renderAnimatedFavorite(undefined, () => true);
+
+  await favorite.press();
+
+  expect(favorite.get().isFavorite).toBe(true);
+});
+
+test('always lets a favorite be removed', async () => {
+  const beforeAdd = jest.fn(() => false);
+  const favorite = await renderAnimatedFavorite(['1'], beforeAdd);
+
+  await favorite.press();
+
+  expect(favorite.get().isFavorite).toBe(false);
+  expect(beforeAdd).not.toHaveBeenCalled();
 });

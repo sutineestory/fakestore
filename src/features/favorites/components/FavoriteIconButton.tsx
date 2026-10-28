@@ -7,14 +7,16 @@ import { AnimatedHeart } from './AnimatedHeart';
 
 type FavoriteIconButtonProps = {
   id: string;
+  /** Return false to stop the item being added, e.g. when the list is full. */
+  beforeAdd?: () => boolean;
 };
 
 /** Round heart-only toggle; the label tells screen readers what it does. */
-export function FavoriteIconButton({ id }: FavoriteIconButtonProps) {
+export function FavoriteIconButton({ id, beforeAdd }: FavoriteIconButtonProps) {
   const t = useTranslation();
   const { spacing } = useTheme();
   const styles = useStyles();
-  const { isFavorite, scale, press } = useAnimatedFavorite(id);
+  const { isFavorite, scale, press } = useAnimatedFavorite(id, beforeAdd);
 
   return (
     <Pressable

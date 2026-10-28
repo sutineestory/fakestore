@@ -11,14 +11,17 @@ import { FavoriteIconButton } from '../FavoriteIconButton';
 
 const { act } = ReactTestRenderer;
 
-async function renderButton(initialFavoriteIds?: string[]) {
+async function renderButton(
+  initialFavoriteIds?: string[],
+  beforeAdd?: () => boolean,
+) {
   let renderer!: Renderer;
   await act(async () => {
     renderer = ReactTestRenderer.create(
       <ThemeProvider initialPreference="light">
         <LanguageProvider>
           <FavoritesProvider initialFavoriteIds={initialFavoriteIds}>
-            <FavoriteIconButton id="1" />
+            <FavoriteIconButton id="1" beforeAdd={beforeAdd} />
           </FavoritesProvider>
         </LanguageProvider>
       </ThemeProvider>,
@@ -85,4 +88,15 @@ test('starts filled for an existing favorite', async () => {
   const root = await renderButton(['1']);
 
   expect(hasFilledHeart(root)).toBe(true);
+});
+
+test('stays unfavorited when beforeAdd refuses', async () => {
+  const root = await renderButton(undefined, () => false);
+
+  await act(async () => {
+    findButton(root).props.onPress();
+  });
+
+  expect(findButton(root).props.accessibilityLabel).toBe('Add to favorites');
+  expect(hasFilledHeart(root)).toBe(false);
 });
