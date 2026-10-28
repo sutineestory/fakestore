@@ -8,7 +8,7 @@ import { formatPrice } from '../formatPrice';
 import type { Product } from '../types';
 import { ProductRating } from './ProductRating';
 
-const THUMBNAIL_SIZE = 72;
+const THUMBNAIL_WIDTH = 96;
 
 type ProductListItemProps = {
   product: Product;
@@ -25,12 +25,12 @@ function ProductListItemBase({ product, onPress }: ProductListItemProps) {
   );
 
   return (
-    <Card onPress={handlePress}>
-      <Stack direction="row" gap="md">
+    <Card onPress={handlePress} style={styles.card}>
+      <Stack direction="row">
         <View style={styles.thumbnail}>
           <Image
             source={{ uri: product.image }}
-            resizeMode="cover"
+            resizeMode="contain"
             style={styles.image}
           />
         </View>
@@ -52,15 +52,10 @@ function ProductListItemBase({ product, onPress }: ProductListItemProps) {
 
 export const ProductListItem = memo(ProductListItemBase);
 
-const useStyles = makeStyles(({ colors, radii }) => ({
-  thumbnail: {
-    width: THUMBNAIL_SIZE,
-    height: THUMBNAIL_SIZE,
-    borderRadius: radii.md,
-    // Clips the photo to the rounded corners.
-    overflow: 'hidden',
-    backgroundColor: colors.media,
-  },
+const useStyles = makeStyles(({ colors, spacing }) => ({
+  // The photo runs to the card's edges; the card's corners clip it.
+  card: { padding: 0, overflow: 'hidden' },
+  thumbnail: { width: THUMBNAIL_WIDTH, backgroundColor: colors.media },
   image: { flex: 1 },
-  content: { flex: 1, justifyContent: 'space-between' },
+  content: { flex: 1, padding: spacing.md, justifyContent: 'space-between' },
 }));

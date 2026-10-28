@@ -1,4 +1,4 @@
-import { Image, Text } from 'react-native';
+import { Image, StyleSheet, Text } from 'react-native';
 import ReactTestRenderer, {
   type ReactTestInstance,
   type ReactTestRenderer as Renderer,
@@ -56,10 +56,16 @@ test('shows the image, title and price', async () => {
   ]);
 });
 
-test('fills its thumbnail with the photo', async () => {
+test('runs the image section to the card edges, showing the whole photo', async () => {
   const root = await renderItem();
 
-  expect(root.findByType(Image).props.resizeMode).toBe('cover');
+  expect(root.findByType(Image).props.resizeMode).toBe('contain');
+  const card = root.findAll(
+    node => node.props.accessibilityRole === 'button',
+  )[0];
+  expect(
+    StyleSheet.flatten(card.props.style({ pressed: false })),
+  ).toMatchObject({ padding: 0, overflow: 'hidden' });
 });
 
 test('keeps long titles to two lines', async () => {

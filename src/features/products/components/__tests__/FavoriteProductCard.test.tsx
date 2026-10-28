@@ -72,3 +72,15 @@ test('is one button that reports its product id', async () => {
 
   expect(onPress).toHaveBeenCalledWith(5);
 });
+
+test('runs the image section to the card edges, showing the whole photo', async () => {
+  const root = await renderCard();
+
+  expect(root.findByType(Image).props.resizeMode).toBe('contain');
+  const card = root.findAll(
+    node => node.props.accessibilityRole === 'button',
+  )[0];
+  expect(
+    StyleSheet.flatten(card.props.style({ pressed: false })),
+  ).toMatchObject({ padding: 0, overflow: 'hidden' });
+});

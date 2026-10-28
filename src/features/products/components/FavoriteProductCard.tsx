@@ -31,7 +31,7 @@ function FavoriteProductCardBase({
 
   return (
     <Card onPress={handlePress} style={[styles.card, { width }]}>
-      <Stack gap="sm">
+      <Stack>
         <View style={styles.media}>
           <Image
             source={{ uri: product.image }}
@@ -42,7 +42,7 @@ function FavoriteProductCardBase({
             <FavoriteIndicator />
           </View>
         </View>
-        <Stack gap="xxs">
+        <Stack gap="xxs" style={styles.details}>
           <Text variant="caption" numberOfLines={1}>
             {product.title}
           </Text>
@@ -57,14 +57,11 @@ function FavoriteProductCardBase({
 
 export const FavoriteProductCard = memo(FavoriteProductCardBase);
 
-const useStyles = makeStyles(({ colors, spacing, radii }) => ({
-  card: { padding: spacing.sm },
-  media: {
-    height: IMAGE_HEIGHT,
-    padding: spacing.sm,
-    borderRadius: radii.md,
-    backgroundColor: colors.media,
-  },
+const useStyles = makeStyles(({ colors, spacing }) => ({
+  // The photo runs to the card's edges; the card's corners clip it.
+  card: { padding: 0, overflow: 'hidden' },
+  media: { height: IMAGE_HEIGHT, backgroundColor: colors.media },
   image: { flex: 1 },
   badge: { position: 'absolute', top: spacing.xs, right: spacing.xs },
+  details: { padding: spacing.sm },
 }));
