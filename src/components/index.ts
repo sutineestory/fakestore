@@ -8,6 +8,7 @@ export { Card, type CardProps } from './Card';
 export { Chip, type ChipProps } from './Chip';
 export { Divider } from './Divider';
 export { Icon, type IconProps } from './Icon';
+export { ImageViewer, type ImageViewerProps } from './ImageViewer';
 export { ListSeparator } from './ListSeparator';
 export { PageDots, type PageDotsProps } from './PageDots';
 export { RefreshControl } from './RefreshControl';

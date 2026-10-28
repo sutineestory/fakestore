@@ -56,6 +56,8 @@ export const th: Messages = {
   productDetail: {
     title: 'รายละเอียดสินค้า',
     addToCart: 'เพิ่มลงตะกร้า',
+    viewImage: 'ดูรูปขนาดใหญ่',
+    closeImage: 'ปิด',
     loading: 'กำลังโหลดสินค้า',
     error: 'โหลดสินค้านี้ไม่สำเร็จ',
     notFound: 'ไม่พบสินค้านี้แล้ว',

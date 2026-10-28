@@ -1,10 +1,12 @@
 import { ShoppingCartIcon } from 'lucide-react-native';
-import { Image, View } from 'react-native';
+import { useCallback, useState } from 'react';
+import { Image, Pressable, View } from 'react-native';
 
 import {
   Button,
   Chip,
   Icon,
+  ImageViewer,
   RequestStatus,
   Screen,
   Stack,
@@ -28,6 +30,9 @@ export function ProductDetailScreen({
   const { language } = useLanguage();
   const styles = useStyles();
   const { status, product, retry } = useProduct(route.params.id);
+  const [viewingImage, setViewingImage] = useState(false);
+  const openImage = useCallback(() => setViewingImage(true), []);
+  const closeImage = useCallback(() => setViewingImage(false), []);
 
   if (!product) {
     return (
@@ -58,11 +63,18 @@ export function ProductDetailScreen({
     >
       <Stack gap="xl">
         <View style={styles.media}>
-          <Image
-            source={{ uri: product.image }}
-            resizeMode="contain"
+          <Pressable
+            accessibilityRole="imagebutton"
+            accessibilityLabel={t.productDetail.viewImage}
+            onPress={openImage}
             style={styles.image}
-          />
+          >
+            <Image
+              source={{ uri: product.image }}
+              resizeMode="contain"
+              style={styles.image}
+            />
+          </Pressable>
           <View style={styles.favorite}>
             <FavoriteIconButton id={productFavoriteId(product.id)} />
           </View>
@@ -81,6 +93,13 @@ export function ProductDetailScreen({
 
         <Text>{product.description}</Text>
       </Stack>
+
+      <ImageViewer
+        uri={product.image}
+        visible={viewingImage}
+        onClose={closeImage}
+        closeLabel={t.productDetail.closeImage}
+      />
     </Screen>
   );
 }

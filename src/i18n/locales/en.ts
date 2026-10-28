@@ -56,6 +56,8 @@ export const en = {
   productDetail: {
     title: 'Product details',
     addToCart: 'Add to cart',
+    viewImage: 'View larger image',
+    closeImage: 'Close',
     loading: 'Loading the product',
     error: 'Couldn’t load this product.',
     notFound: 'This product doesn’t exist any more.',

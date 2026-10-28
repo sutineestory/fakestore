@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { ActivityIndicator, Image, Text } from 'react-native';
+import { ActivityIndicator, Image, Modal, Text } from 'react-native';
 import ReactTestRenderer, {
   type ReactTestInstance,
   type ReactTestRenderer as Renderer,
@@ -95,7 +95,7 @@ test('shows everything about a listed product', async () => {
 
   const root = await renderDetail(3);
 
-  expect(root.findByType(Image).props.source).toEqual({
+  expect(root.findAllByType(Image)[0].props.source).toEqual({
     uri: 'https://fakestoreapi.com/img/jacket.png',
   });
   expect(texts(root)).toEqual([
@@ -107,6 +107,24 @@ test('shows everything about a listed product', async () => {
     'Add to cart',
   ]);
   expect(mockFetchProduct).not.toHaveBeenCalled();
+});
+
+test('opens the image full screen and closes it again', async () => {
+  const root = await renderDetail(3);
+
+  expect(root.findByType(Modal).props.visible).toBe(false);
+
+  await act(async () => {
+    findLabelled(root, 'View larger image').props.onPress();
+  });
+
+  expect(root.findByType(Modal).props.visible).toBe(true);
+
+  await act(async () => {
+    findLabelled(root, 'Close').props.onPress();
+  });
+
+  expect(root.findByType(Modal).props.visible).toBe(false);
 });
 
 test('offers an add-to-cart button that does nothing yet', async () => {
