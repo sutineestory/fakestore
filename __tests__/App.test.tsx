@@ -8,8 +8,23 @@ import ReactTestRenderer, {
 } from 'react-test-renderer';
 
 import App from '@/App';
+import { makeProducts } from '@/features/products/testUtils';
 
 const { act } = ReactTestRenderer;
+
+const PRODUCTS = makeProducts(1, 20);
+
+/** Answers like the Fake Store API: `?limit=N` lists, `/products/:id` gets one. */
+function fakeStoreResponse(url: string) {
+  const { pathname, searchParams } = new URL(url);
+  const id = pathname.match(/^\/products\/(\d+)$/)?.[1];
+  const body = id
+    ? PRODUCTS.find(product => product.id === Number(id))
+    : PRODUCTS.slice(0, Number(searchParams.get('limit')));
+  return new Response(body ? JSON.stringify(body) : '');
+}
+
+const mockFetch = jest.spyOn(globalThis, 'fetch');
 
 function hasText(node: ReactTestInstance, text: string) {
   return (
@@ -64,6 +79,7 @@ async function press(node: ReactTestInstance) {
 
 beforeEach(() => {
   jest.useFakeTimers();
+  mockFetch.mockImplementation(async input => fakeStoreResponse(String(input)));
 });
 
 afterEach(() => {
