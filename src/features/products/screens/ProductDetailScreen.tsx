@@ -46,7 +46,12 @@ export function ProductDetailScreen({
         </View>
 
         <Stack gap="sm">
-          <Chip label={product.category} />
+          <Stack direction="row" justify="space-between" align="center">
+            <Chip label={product.category} />
+            <Text variant="caption" color="textMuted">
+              {t.productDetail.productNumber(product.id)}
+            </Text>
+          </Stack>
           <Text variant="heading">{product.title}</Text>
           <Text variant="heading" color="primary">
             {formatPrice(product.price, language)}

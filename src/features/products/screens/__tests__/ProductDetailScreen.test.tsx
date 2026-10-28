@@ -85,6 +85,7 @@ test('shows everything about a listed product', async () => {
   });
   expect(texts(root)).toEqual([
     "men's clothing",
+    'Product #3',
     'Mens Cotton Jacket',
     '$55.99',
     'Add to favorites',
@@ -162,5 +163,6 @@ test('uses the active language', async () => {
   const root = await renderDetail(3, { language: 'th' });
 
   expect(texts(root)).toContain('US$3.50');
+  expect(texts(root)).toContain('สินค้ารหัส 3');
   expect(texts(root)).toContain('คะแนน 4.1 จาก 5 · 30 รีวิว');
 });
