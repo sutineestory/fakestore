@@ -3,9 +3,11 @@ import {
   use,
   useCallback,
   useMemo,
-  useState,
   type PropsWithChildren,
 } from 'react';
+
+import { usePersistedState, type Persistence } from '@/hooks';
+import { loadCartIds, saveCartIds } from './services/cartStorage';
 
 type CartContextValue = {
   /** Product ids in the order they were added; each appears once. */
@@ -23,18 +25,37 @@ type CartProviderProps = PropsWithChildren<{
 
 const EMPTY: readonly number[] = [];
 
+const PERSISTENCE: Persistence<readonly number[]> = {
+  load: loadCartIds,
+  save: saveCartIds,
+  // Keep anything added while the read was in flight, after the saved items.
+  merge: (stored, current) => [
+    ...stored,
+    ...current.filter(id => !stored.includes(id)),
+  ],
+};
+
 export function CartProvider({ children, initialIds }: CartProviderProps) {
-  const [ids, setIds] = useState<readonly number[]>(initialIds ?? EMPTY);
+  const [ids, setIds] = usePersistedState<readonly number[]>(
+    initialIds ?? EMPTY,
+    PERSISTENCE,
+  );
 
-  const add = useCallback((id: number) => {
-    setIds(current => (current.includes(id) ? current : [...current, id]));
-  }, []);
+  const add = useCallback(
+    (id: number) => {
+      setIds(current => (current.includes(id) ? current : [...current, id]));
+    },
+    [setIds],
+  );
 
-  const remove = useCallback((id: number) => {
-    setIds(current => current.filter(item => item !== id));
-  }, []);
+  const remove = useCallback(
+    (id: number) => {
+      setIds(current => current.filter(item => item !== id));
+    },
+    [setIds],
+  );
 
-  const clear = useCallback(() => setIds(EMPTY), []);
+  const clear = useCallback(() => setIds(EMPTY), [setIds]);
 
   const value = useMemo<CartContextValue>(
     () => ({ ids, add, remove, clear }),

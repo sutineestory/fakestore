@@ -212,6 +212,31 @@ test('adds a product to the cart and removes it there', async () => {
   });
 });
 
+test('keeps the cart after the app restarts', async () => {
+  const first = await renderApp();
+  await press(findTab(first.root, 'Products'));
+  await press(findButton(first.root, 'Product 2'));
+  await press(findButton(first.root, 'Add to cart'));
+  await act(async () => {
+    first.unmount();
+  });
+
+  const second = await renderApp();
+  await press(findTab(second.root, 'Products'));
+
+  expect(
+    second.root.findAll(
+      node =>
+        node.props.accessibilityLabel === 'Cart, 1 item' &&
+        typeof node.props.onPress === 'function',
+    ),
+  ).not.toHaveLength(0);
+
+  await act(async () => {
+    second.unmount();
+  });
+});
+
 test('favorites a product from its detail screen', async () => {
   const renderer = await renderApp();
 

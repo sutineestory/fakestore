@@ -2,6 +2,7 @@ import ReactTestRenderer from 'react-test-renderer';
 
 import { ErrorBoundary } from '@/test-utils/ErrorBoundary';
 import { CartProvider, useCart } from '../CartProvider';
+import { loadCartIds, saveCartIds } from '../services/cartStorage';
 
 const { act } = ReactTestRenderer;
 
@@ -74,6 +75,28 @@ test('clears everything', async () => {
   await cart.run(c => c.clear());
 
   expect(cart.ids()).toEqual([]);
+});
+
+test('restores the cart of an earlier session', async () => {
+  await saveCartIds([7, 2]);
+
+  const cart = await renderCart();
+
+  expect(cart.ids()).toEqual([7, 2]);
+});
+
+test('saves changes for the next session', async () => {
+  const cart = await renderCart();
+
+  await cart.run(c => c.add(3));
+  await cart.run(c => c.add(5));
+  await cart.run(c => c.remove(3));
+
+  await expect(loadCartIds()).resolves.toEqual([5]);
+
+  await cart.run(c => c.clear());
+
+  await expect(loadCartIds()).resolves.toEqual([]);
 });
 
 test('useCart throws outside <CartProvider>', async () => {
