@@ -1,13 +1,11 @@
-import type { SampleItem } from './types';
-
 /**
  * Case-insensitive title match. The query is used as given, so trim it first;
  * an empty query keeps every item.
  */
-export function filterSampleItems(
-  items: SampleItem[],
+export function filterByTitle<T extends { title: string }>(
+  items: T[],
   query: string,
-): SampleItem[] {
+): T[] {
   if (!query) {
     return items;
   }

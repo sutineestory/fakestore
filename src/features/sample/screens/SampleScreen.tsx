@@ -12,8 +12,8 @@ import {
 } from '@/components';
 import { useTranslation } from '@/i18n';
 import { makeStyles } from '@/theme';
+import { filterByTitle } from '@/utils/filterByTitle';
 import { SampleListItem } from '../components/SampleListItem';
-import { filterSampleItems } from '../filterSampleItems';
 import { useSampleItems } from '../hooks/useSampleItems';
 import type { SampleItem } from '../types';
 
@@ -32,7 +32,7 @@ export function SampleScreen() {
 
   const items = useMemo(
     () =>
-      state.status === 'success' ? filterSampleItems(state.items, search) : [],
+      state.status === 'success' ? filterByTitle(state.items, search) : [],
     [state, search],
   );
 
