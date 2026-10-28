@@ -21,12 +21,11 @@ import { makeStyles } from '@/theme';
 import { ProductRating } from '../components/ProductRating';
 import { MAX_FAVORITE_PRODUCTS } from '../favoriteLimit';
 import { formatPrice } from '../formatPrice';
+import { DETAIL_IMAGE_HEIGHT } from '../layout';
 import { useAddToCart } from '../hooks/useAddToCart';
 import { useFavoriteProductLimit } from '../hooks/useFavoriteProductLimit';
 import { useProduct } from '../hooks/useProduct';
 import { productFavoriteId } from '../productFavoriteId';
-
-const IMAGE_HEIGHT = 280;
 
 export function ProductDetailScreen({
   navigation,
@@ -141,7 +140,7 @@ export function ProductDetailScreen({
 
 const useStyles = makeStyles(({ colors, spacing, radii }) => ({
   media: {
-    height: IMAGE_HEIGHT,
+    height: DETAIL_IMAGE_HEIGHT,
     padding: spacing.lg,
     borderRadius: radii.lg,
     backgroundColor: colors.media,

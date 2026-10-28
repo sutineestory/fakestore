@@ -1,20 +1,17 @@
 import { useCallback, useState } from 'react';
 import {
   FlatList,
-  useWindowDimensions,
   type ListRenderItem,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
 } from 'react-native';
 
 import { PageDots, Stack } from '@/components';
-import { makeStyles, useTheme } from '@/theme';
+import { makeStyles } from '@/theme';
 import { carouselIndex } from '@/utils/carouselIndex';
+import { useFavoriteCardLayout } from '../hooks/useFavoriteCardLayout';
 import type { Product } from '../types';
 import { FavoriteProductCard } from './FavoriteProductCard';
-
-// Two and a half cards on screen, so the cut-off one hints at scrolling.
-const VISIBLE_CARDS = 2.5;
 
 const keyExtractor = (product: Product) => String(product.id);
 
@@ -25,16 +22,9 @@ type FavoritesRowProps = {
 
 /** Horizontally snapping cards with page dots under them. */
 export function FavoritesRow({ products, onPressProduct }: FavoritesRowProps) {
-  const { spacing } = useTheme();
   const styles = useStyles();
-  const { width: windowWidth } = useWindowDimensions();
+  const { cardWidth, interval } = useFavoriteCardLayout();
   const [activeIndex, setActiveIndex] = useState(0);
-
-  // The list around the row is inset by `lg` on both sides.
-  const cardWidth = Math.round(
-    (windowWidth - spacing.lg * 2 - spacing.md * 2) / VISIBLE_CARDS,
-  );
-  const interval = cardWidth + spacing.md;
 
   const renderItem = useCallback<ListRenderItem<Product>>(
     ({ item }) => (

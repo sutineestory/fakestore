@@ -5,10 +5,9 @@ import { Card, Stack, Text } from '@/components';
 import { useLanguage } from '@/i18n';
 import { makeStyles } from '@/theme';
 import { formatPrice } from '../formatPrice';
+import { ROW_IMAGE_WIDTH } from '../layout';
 import type { Product } from '../types';
 import { ProductRating } from './ProductRating';
-
-const THUMBNAIL_WIDTH = 96;
 
 type ProductListItemProps = {
   product: Product;
@@ -55,7 +54,7 @@ export const ProductListItem = memo(ProductListItemBase);
 const useStyles = makeStyles(({ colors, spacing }) => ({
   // The photo runs to the card's edges; the card's corners clip it.
   card: { padding: 0, overflow: 'hidden' },
-  thumbnail: { width: THUMBNAIL_WIDTH, backgroundColor: colors.media },
+  thumbnail: { width: ROW_IMAGE_WIDTH, backgroundColor: colors.media },
   image: { flex: 1 },
   content: { flex: 1, padding: spacing.md, justifyContent: 'space-between' },
 }));

@@ -6,9 +6,8 @@ import { FavoriteIndicator } from '@/features/favorites';
 import { useLanguage } from '@/i18n';
 import { makeStyles } from '@/theme';
 import { formatPrice } from '../formatPrice';
+import { CARD_IMAGE_HEIGHT } from '../layout';
 import type { Product } from '../types';
-
-const IMAGE_HEIGHT = 96;
 
 type FavoriteProductCardProps = {
   product: Product;
@@ -60,7 +59,7 @@ export const FavoriteProductCard = memo(FavoriteProductCardBase);
 const useStyles = makeStyles(({ colors, spacing }) => ({
   // The photo runs to the card's edges; the card's corners clip it.
   card: { padding: 0, overflow: 'hidden' },
-  media: { height: IMAGE_HEIGHT, backgroundColor: colors.media },
+  media: { height: CARD_IMAGE_HEIGHT, backgroundColor: colors.media },
   image: { flex: 1 },
   badge: { position: 'absolute', top: spacing.xs, right: spacing.xs },
   details: { padding: spacing.sm },
