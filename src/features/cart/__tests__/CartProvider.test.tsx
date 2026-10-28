@@ -1,7 +1,7 @@
 import ReactTestRenderer from 'react-test-renderer';
 
 import { ErrorBoundary } from '@/test-utils/ErrorBoundary';
-import { CartProvider, useCart } from '../CartProvider';
+import { CartProvider, MAX_CART_ITEMS, useCart } from '../CartProvider';
 import { loadCartIds, saveCartIds } from '../services/cartStorage';
 
 const { act } = ReactTestRenderer;
@@ -25,6 +25,7 @@ async function renderCart(initialIds?: number[]) {
 
   return {
     ids: () => [...cart.ids],
+    isFull: () => cart.isFull,
     async run(action: (current: Cart) => void) {
       await act(async () => action(cart));
     },
@@ -75,6 +76,23 @@ test('clears everything', async () => {
   await cart.run(c => c.clear());
 
   expect(cart.ids()).toEqual([]);
+});
+
+test('holds at most ten products', async () => {
+  const ten = Array.from({ length: 10 }, (_, index) => index + 1);
+  const cart = await renderCart(ten.slice(0, 9));
+
+  expect(MAX_CART_ITEMS).toBe(10);
+  expect(cart.isFull()).toBe(false);
+
+  await cart.run(c => c.add(10));
+  expect(cart.isFull()).toBe(true);
+
+  await cart.run(c => c.add(11));
+  expect(cart.ids()).toEqual(ten);
+
+  await cart.run(c => c.remove(1));
+  expect(cart.isFull()).toBe(false);
 });
 
 test('restores the cart of an earlier session', async () => {

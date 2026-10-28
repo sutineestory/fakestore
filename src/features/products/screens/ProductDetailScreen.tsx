@@ -13,7 +13,7 @@ import {
   Stack,
   Text,
 } from '@/components';
-import { useCart } from '@/features/cart';
+import { MAX_CART_ITEMS } from '@/features/cart';
 import { FavoriteIconButton } from '@/features/favorites';
 import { useLanguage, useTranslation } from '@/i18n';
 import type { RootStackScreenProps } from '@/navigation';
@@ -21,6 +21,7 @@ import { makeStyles } from '@/theme';
 import { ProductRating } from '../components/ProductRating';
 import { MAX_FAVORITE_PRODUCTS } from '../favoriteLimit';
 import { formatPrice } from '../formatPrice';
+import { useAddToCart } from '../hooks/useAddToCart';
 import { useFavoriteProductLimit } from '../hooks/useFavoriteProductLimit';
 import { useProduct } from '../hooks/useProduct';
 import { productFavoriteId } from '../productFavoriteId';
@@ -36,9 +37,7 @@ export function ProductDetailScreen({
   const styles = useStyles();
   const { id } = route.params;
   const { status, product, retry } = useProduct(id);
-  const cart = useCart();
-  const inCart = cart.ids.includes(id);
-  const addToCart = useCallback(() => cart.add(id), [cart, id]);
+  const cart = useAddToCart(id);
   const openCart = useCallback(() => navigation.navigate('Cart'), [navigation]);
   const [viewingImage, setViewingImage] = useState(false);
   const openImage = useCallback(() => setViewingImage(true), []);
@@ -66,15 +65,17 @@ export function ProductDetailScreen({
       edges={['left', 'right', 'bottom']}
       footer={
         <Button
-          title={inCart ? t.productDetail.viewCart : t.productDetail.addToCart}
-          variant={inCart ? 'secondary' : 'primary'}
+          title={
+            cart.inCart ? t.productDetail.viewCart : t.productDetail.addToCart
+          }
+          variant={cart.inCart ? 'secondary' : 'primary'}
           icon={
             <Icon
               icon={ShoppingCartIcon}
-              color={inCart ? 'text' : 'onPrimary'}
+              color={cart.inCart ? 'text' : 'onPrimary'}
             />
           }
-          onPress={inCart ? openCart : addToCart}
+          onPress={cart.inCart ? openCart : cart.addToCart}
         />
       }
     >
@@ -126,6 +127,13 @@ export function ProductDetailScreen({
         message={t.favorites.fullMessage(MAX_FAVORITE_PRODUCTS)}
         okLabel={t.common.ok}
         onClose={dismissLimit}
+      />
+      <NoticeSheet
+        visible={cart.limitReached}
+        title={t.cart.fullTitle}
+        message={t.cart.fullMessage(MAX_CART_ITEMS)}
+        okLabel={t.common.ok}
+        onClose={cart.dismissLimit}
       />
     </Screen>
   );

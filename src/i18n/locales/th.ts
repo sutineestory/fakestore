@@ -76,6 +76,9 @@ export const th: Messages = {
     removeAll: 'ลบทั้งหมด',
     total: 'ยอดรวม',
     submit: 'สั่งซื้อ',
+    fullTitle: 'ตะกร้าเต็มแล้ว',
+    fullMessage: max =>
+      `ใส่สินค้าในตะกร้าได้สูงสุด ${max} รายการ ลบรายการเดิมออกก่อนจึงจะเพิ่มได้`,
   },
   favorites: {
     label: 'รายการโปรด',

@@ -149,6 +149,25 @@ test('adds the product to the cart, then offers to view it', async () => {
   expect(texts(root)).toContain('Opened cart');
 });
 
+test('refuses to add to a full cart and says why', async () => {
+  mockFetchProduct.mockResolvedValue(makeProduct(11));
+  const ten = Array.from({ length: 10 }, (_, index) => index + 1);
+  const root = await renderDetail(11, { initialCartIds: ten });
+
+  await act(async () => {
+    findButton(root, 'Add to cart').props.onPress();
+  });
+
+  expect(texts(root)).toContain('Your cart is full');
+  expect(texts(root)).toContain('Add to cart');
+
+  await act(async () => {
+    findButton(root, 'Got it').props.onPress();
+  });
+
+  expect(texts(root)).not.toContain('Your cart is full');
+});
+
 test('offers to view the cart when the product is already in it', async () => {
   const root = await renderDetail(3, { initialCartIds: [3] });
 

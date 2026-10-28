@@ -77,6 +77,9 @@ export const en = {
     removeAll: 'Remove all',
     total: 'Total',
     submit: 'Submit order',
+    fullTitle: 'Your cart is full',
+    fullMessage: (max: number) =>
+      `You can have up to ${max} items in your cart. Remove one to add another.`,
   },
   favorites: {
     label: 'Favorite',

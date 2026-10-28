@@ -9,9 +9,14 @@ import {
 import { usePersistedState, type Persistence } from '@/hooks';
 import { loadCartIds, saveCartIds } from './services/cartStorage';
 
+/** Most products the cart can hold. */
+export const MAX_CART_ITEMS = 10;
+
 type CartContextValue = {
   /** Product ids in the order they were added; each appears once. */
   ids: readonly number[];
+  /** True once the cart holds `MAX_CART_ITEMS`; `add` then does nothing. */
+  isFull: boolean;
   add: (id: number) => void;
   remove: (id: number) => void;
   clear: () => void;
@@ -43,7 +48,11 @@ export function CartProvider({ children, initialIds }: CartProviderProps) {
 
   const add = useCallback(
     (id: number) => {
-      setIds(current => (current.includes(id) ? current : [...current, id]));
+      setIds(current =>
+        current.includes(id) || current.length >= MAX_CART_ITEMS
+          ? current
+          : [...current, id],
+      );
     },
     [setIds],
   );
@@ -58,7 +67,13 @@ export function CartProvider({ children, initialIds }: CartProviderProps) {
   const clear = useCallback(() => setIds(EMPTY), [setIds]);
 
   const value = useMemo<CartContextValue>(
-    () => ({ ids, add, remove, clear }),
+    () => ({
+      ids,
+      isFull: ids.length >= MAX_CART_ITEMS,
+      add,
+      remove,
+      clear,
+    }),
     [ids, add, remove, clear],
   );
 

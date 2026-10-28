@@ -1,1 +1,1 @@
-export { CartProvider, useCart } from './CartProvider';
+export { CartProvider, MAX_CART_ITEMS, useCart } from './CartProvider';
