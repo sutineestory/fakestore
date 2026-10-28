@@ -1,6 +1,15 @@
+import { ShoppingCartIcon } from 'lucide-react-native';
 import { Image, View } from 'react-native';
 
-import { Chip, RequestStatus, Screen, Stack, Text } from '@/components';
+import {
+  Button,
+  Chip,
+  Icon,
+  RequestStatus,
+  Screen,
+  Stack,
+  Text,
+} from '@/components';
 import { FavoriteButton } from '@/features/favorites';
 import { useLanguage, useTranslation } from '@/i18n';
 import type { RootStackScreenProps } from '@/navigation';
@@ -36,7 +45,20 @@ export function ProductDetailScreen({
   }
 
   return (
-    <Screen scroll edges={['left', 'right', 'bottom']}>
+    <Screen
+      scroll
+      edges={['left', 'right', 'bottom']}
+      footer={
+        <Stack gap="sm">
+          <FavoriteButton id={productFavoriteId(product.id)} />
+          {/* Placeholder until there is a cart to add to. */}
+          <Button
+            title={t.productDetail.addToCart}
+            icon={<Icon icon={ShoppingCartIcon} color="onPrimary" />}
+          />
+        </Stack>
+      }
+    >
       <Stack gap="xl">
         <View style={styles.media}>
           <Image
@@ -56,8 +78,6 @@ export function ProductDetailScreen({
             </Text>
           </Stack>
         </Stack>
-
-        <FavoriteButton id={productFavoriteId(product.id)} />
 
         <Text>{product.description}</Text>
       </Stack>

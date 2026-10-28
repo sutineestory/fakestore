@@ -88,10 +88,26 @@ test('shows everything about a listed product', async () => {
     'Mens Cotton Jacket',
     '4.7 (500)',
     '$55.99',
-    'Add to favorites',
     'Great outerwear jackets.',
+    'Add to favorites',
+    'Add to cart',
   ]);
   expect(mockFetchProduct).not.toHaveBeenCalled();
+});
+
+test('offers an add-to-cart button that does nothing yet', async () => {
+  const root = await renderDetail(3);
+
+  const addToCart = root.find(
+    node =>
+      node.props.accessibilityRole === 'button' &&
+      typeof node.type !== 'string' &&
+      node
+        .findAllByType(Text)
+        .some(text => text.props.children === 'Add to cart'),
+  );
+  expect(addToCart.props.accessibilityState).toMatchObject({ disabled: false });
+  expect(addToCart.props.onPress).toBeUndefined();
 });
 
 test('toggles the product as a favorite, apart from Home item 3', async () => {

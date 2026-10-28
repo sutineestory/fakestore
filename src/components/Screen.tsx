@@ -1,5 +1,11 @@
-import type { PropsWithChildren } from 'react';
-import { ScrollView, View, type StyleProp, type ViewStyle } from 'react-native';
+import type { PropsWithChildren, ReactNode } from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 
 import { makeStyles } from '@/theme';
@@ -14,6 +20,8 @@ export type ScreenProps = PropsWithChildren<{
    * headers and tab bars already handle top/bottom.
    */
   edges?: Edge[];
+  /** Pinned below the content, e.g. a bar of actions; the content scrolls above it. */
+  footer?: ReactNode;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
 }>;
@@ -26,6 +34,7 @@ export function Screen({
   scroll = false,
   padded = true,
   edges = DEFAULT_EDGES,
+  footer,
   style,
   contentContainerStyle,
 }: ScreenProps) {
@@ -55,6 +64,7 @@ export function Screen({
           {children}
         </View>
       )}
+      {footer ? <View style={styles.footer}>{footer}</View> : null}
     </SafeAreaView>
   );
 }
@@ -66,5 +76,11 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
   },
   padded: {
     padding: spacing.lg,
+  },
+  footer: {
+    padding: spacing.lg,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.border,
+    backgroundColor: colors.surface,
   },
 }));
