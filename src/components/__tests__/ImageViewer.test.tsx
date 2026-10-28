@@ -1,4 +1,4 @@
-import { Image, Modal, ScrollView } from 'react-native';
+import { Image, Modal, ScrollView, StyleSheet } from 'react-native';
 import ReactTestRenderer, {
   type ReactTestRenderer as Renderer,
 } from 'react-test-renderer';
@@ -55,6 +55,23 @@ test('closes from its labelled button', async () => {
   });
 
   expect(onClose).toHaveBeenCalledTimes(1);
+});
+
+test('keeps the close button inside the safe area', async () => {
+  const root = await renderViewer(true);
+
+  const close = root.find(
+    node =>
+      node.props.accessibilityLabel === 'Close' &&
+      typeof node.props.onPress === 'function',
+  );
+  // Absolute offsets ignore the safe-area padding and land under the notch.
+  const style = StyleSheet.flatten(
+    typeof close.props.style === 'function'
+      ? close.props.style({ pressed: false })
+      : close.props.style,
+  );
+  expect(style.position).not.toBe('absolute');
 });
 
 test('closes on Android back', async () => {

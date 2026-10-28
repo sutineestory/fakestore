@@ -1,5 +1,5 @@
 import { XIcon } from 'lucide-react-native';
-import { Image, Modal, Pressable, ScrollView } from 'react-native';
+import { Image, Modal, Pressable, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { makeStyles, useTheme } from '@/theme';
@@ -35,6 +35,19 @@ export function ImageViewer({
       supportedOrientations={['portrait', 'landscape']}
     >
       <SafeAreaView style={styles.container}>
+        {/* In the layout, not absolutely placed: absolute offsets ignore the
+            safe-area padding and would put the button under the notch. */}
+        <View style={styles.header}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={closeLabel}
+            hitSlop={spacing.sm}
+            onPress={onClose}
+            style={({ pressed }) => [styles.close, pressed && styles.pressed]}
+          >
+            <Icon icon={XIcon} />
+          </Pressable>
+        </View>
         <ScrollView
           maximumZoomScale={MAX_ZOOM}
           minimumZoomScale={1}
@@ -45,15 +58,6 @@ export function ImageViewer({
         >
           <Image source={{ uri }} resizeMode="contain" style={styles.image} />
         </ScrollView>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={closeLabel}
-          hitSlop={spacing.sm}
-          onPress={onClose}
-          style={({ pressed }) => [styles.close, pressed && styles.pressed]}
-        >
-          <Icon icon={XIcon} />
-        </Pressable>
       </SafeAreaView>
     </Modal>
   );
@@ -63,10 +67,12 @@ const useStyles = makeStyles(({ colors, spacing, radii }) => ({
   container: { flex: 1, backgroundColor: colors.media },
   content: { flexGrow: 1 },
   image: { flex: 1 },
+  header: {
+    alignItems: 'flex-end',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
   close: {
-    position: 'absolute',
-    top: spacing.xxl,
-    right: spacing.lg,
     padding: spacing.sm,
     borderRadius: radii.full,
     borderWidth: 1,
