@@ -16,7 +16,7 @@ const lightColors = {
   success: palette.green[600],
   warning: palette.amber[600],
   favorite: palette.red[600],
-  media: palette.white,
+  media: palette.brand[100],
   scrim: palette.scrim,
 };
 
@@ -38,8 +38,8 @@ const darkColors: ColorTokens = {
   success: palette.green[400],
   warning: palette.amber[400],
   favorite: palette.red[400],
-  // Product photos are shot on white; keep their backdrop white in dark mode too.
-  media: palette.white,
+  // Backdrop behind product photos; the same light tint in both themes.
+  media: palette.brand[100],
   scrim: palette.scrim,
 };
 
