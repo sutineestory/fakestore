@@ -1,4 +1,4 @@
-import { ArrowUpDownIcon } from 'lucide-react-native';
+import { ArrowUpDownIcon, SlidersHorizontalIcon } from 'lucide-react-native';
 import { StyleSheet } from 'react-native';
 
 import { Stack, Text, TextField } from '@/components';
@@ -9,14 +9,22 @@ import { RefineButton } from './RefineButton';
 type HotDealsHeaderProps = {
   query: string;
   onChangeQuery: (query: string) => void;
+  /** How many categories the list is filtered to. */
+  filterCount: number;
+  onPressFilter: () => void;
   sort: ProductSort;
   onPressSort: () => void;
 };
 
-/** The hot deals heading and its sort button, with the search field under them. */
+/**
+ * The hot deals heading and its filter and sort buttons, with the search
+ * field under them.
+ */
 export function HotDealsHeader({
   query,
   onChangeQuery,
+  filterCount,
+  onPressFilter,
   sort,
   onPressSort,
 }: HotDealsHeaderProps) {
@@ -28,6 +36,12 @@ export function HotDealsHeader({
         <Text variant="heading" accessibilityRole="header" style={styles.title}>
           {t.productList.hotDeals}
         </Text>
+        <RefineButton
+          title={t.productList.filter.button(filterCount)}
+          icon={SlidersHorizontalIcon}
+          active={filterCount > 0}
+          onPress={onPressFilter}
+        />
         <RefineButton
           title={t.productList.sort.button}
           icon={ArrowUpDownIcon}

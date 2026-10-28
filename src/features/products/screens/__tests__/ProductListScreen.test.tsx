@@ -10,8 +10,9 @@ import ReactTestRenderer, {
   type ReactTestRenderer as Renderer,
 } from 'react-test-renderer';
 
-import { fetchProducts } from '../../services/productsService';
+import { fetchCategories, fetchProducts } from '../../services/productsService';
 import {
+  makeProduct,
   makeProducts,
   renderProductsScreen,
   type RenderOptions,
@@ -24,6 +25,7 @@ jest.mock('../../services/productsService');
 const { act } = ReactTestRenderer;
 
 const mockFetchProducts = jest.mocked(fetchProducts);
+const mockFetchCategories = jest.mocked(fetchCategories);
 
 function nextRequest() {
   const request = Promise.withResolvers<Product[]>();
@@ -105,6 +107,8 @@ function listedIds(root: ReactTestInstance) {
 beforeEach(() => {
   jest.useFakeTimers();
   mockFetchProducts.mockReset();
+  mockFetchCategories.mockReset();
+  mockFetchCategories.mockResolvedValue(['electronics', 'jewelery']);
 });
 
 afterEach(async () => {
@@ -328,4 +332,44 @@ test('sorts every hot deal from the sort sheet', async () => {
   );
   // Choosing an order closes the sheet.
   expect(hasText(root, 'Price: high to low')).toBe(false);
+});
+
+test('filters every hot deal by category from the filter sheet', async () => {
+  const root = await renderLoadedScreen();
+
+  await act(async () => {
+    findButton(root, 'Filter').props.onPress();
+  });
+  const second = nextRequest();
+  const third = nextRequest();
+  await act(async () => {
+    findButton(root, 'jewelery').props.onPress();
+  });
+  const jewelery = (product: Product) =>
+    makeProduct(product.id, {
+      category: product.id > 15 ? 'jewelery' : 'electronics',
+    });
+  await act(async () => second.resolve(makeProducts(1, 20).map(jewelery)));
+  await act(async () => third.resolve(makeProducts(1, 20).map(jewelery)));
+  await act(async () => {
+    findButton(root, 'Done').props.onPress();
+  });
+
+  expect(listedIds(root)).toEqual([16, 17, 18, 19, 20]);
+  expect(findButton(root, 'Filter (1)')).toBeDefined();
+});
+
+test('says when no hot deal is in the chosen categories', async () => {
+  const root = await renderLoadedScreen();
+
+  await act(async () => {
+    findButton(root, 'Filter').props.onPress();
+  });
+  const finishLoading = queueRemainingPages();
+  await act(async () => {
+    findButton(root, 'jewelery').props.onPress();
+  });
+  await finishLoading();
+
+  expect(hasText(root, 'No hot deals in the chosen categories.')).toBe(true);
 });

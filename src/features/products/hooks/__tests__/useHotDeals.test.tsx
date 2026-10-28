@@ -4,7 +4,7 @@ import ReactTestRenderer, {
 
 import { ProductsProvider } from '../../ProductsProvider';
 import { fetchProducts } from '../../services/productsService';
-import { makeProducts } from '../../testUtils';
+import { makeProduct, makeProducts } from '../../testUtils';
 import type { Product } from '../../types';
 import { useHotDeals } from '../useHotDeals';
 
@@ -25,7 +25,7 @@ function nextRequest() {
 
 let renderer: Renderer | undefined;
 
-async function renderLoadedDeals() {
+async function renderLoadedDeals(firstPage = makeProducts(1, 10)) {
   let deals!: HotDeals;
   function Probe() {
     deals = useHotDeals();
@@ -40,7 +40,7 @@ async function renderLoadedDeals() {
       </ProductsProvider>,
     );
   });
-  await act(async () => first.resolve(makeProducts(1, 10)));
+  await act(async () => first.resolve(firstPage));
 
   return () => deals;
 }
@@ -171,4 +171,74 @@ test('goes back to the API order', async () => {
   await act(async () => getDeals().setSort('recommended'));
 
   expect(idsOf(getDeals().products)).toEqual(idsOf(makeProducts(1, 10)));
+});
+
+/** Odd ids are electronics, even ids jewelery. */
+function makeMixedProducts(to: number) {
+  return makeProducts(1, to).map(product =>
+    makeProduct(product.id, {
+      category: product.id % 2 ? 'electronics' : 'jewelery',
+    }),
+  );
+}
+
+test('starts with no category chosen', async () => {
+  const getDeals = await renderLoadedDeals();
+
+  expect(getDeals().categories).toEqual([]);
+});
+
+test('keeps only the chosen categories, from every page', async () => {
+  const getDeals = await renderLoadedDeals(makeMixedProducts(10));
+
+  const second = nextRequest();
+  await act(async () => getDeals().toggleCategory('jewelery'));
+
+  expect(getDeals().categories).toEqual(['jewelery']);
+
+  const third = nextRequest();
+  await act(async () => second.resolve(makeMixedProducts(20)));
+  await act(async () => third.resolve(makeMixedProducts(20)));
+
+  expect(idsOf(getDeals().products)).toEqual([
+    2, 4, 6, 8, 10, 12, 14, 16, 18, 20,
+  ]);
+});
+
+test('toggles a category off again', async () => {
+  const getDeals = await renderLoadedDeals();
+  nextRequest();
+  await act(async () => getDeals().toggleCategory('jewelery'));
+  await act(async () => getDeals().toggleCategory('electronics'));
+
+  await act(async () => getDeals().toggleCategory('jewelery'));
+
+  expect(getDeals().categories).toEqual(['electronics']);
+});
+
+test('clears every chosen category', async () => {
+  const getDeals = await renderLoadedDeals();
+  nextRequest();
+  await act(async () => getDeals().toggleCategory('jewelery'));
+
+  await act(async () => getDeals().clearCategories());
+
+  expect(getDeals().categories).toEqual([]);
+  expect(idsOf(getDeals().products)).toEqual(idsOf(makeProducts(1, 10)));
+});
+
+test('searches, filters and sorts together', async () => {
+  const getDeals = await renderLoadedDeals(makeMixedProducts(10));
+  const second = nextRequest();
+  const third = nextRequest();
+
+  await act(async () => {
+    getDeals().setQuery('product 1');
+    getDeals().toggleCategory('jewelery');
+    getDeals().setSort('priceHighToLow');
+  });
+  await act(async () => second.resolve(makeMixedProducts(20)));
+  await act(async () => third.resolve(makeMixedProducts(20)));
+
+  expect(idsOf(getDeals().products)).toEqual([18, 16, 14, 12, 10]);
 });

@@ -55,6 +55,16 @@ export const en = {
     loadMoreError: 'Couldn’t load more products.',
     search: 'Search hot deals',
     noResults: (query: string) => `No hot deals match “${query}”.`,
+    noCategoryResults: 'No hot deals in the chosen categories.',
+    filter: {
+      button: (count: number) => (count === 0 ? 'Filter' : `Filter (${count})`),
+      title: 'Filter by category',
+      loading: 'Loading categories',
+      error: 'Couldn’t load the categories.',
+      empty: 'No categories yet.',
+      clear: 'Clear',
+      done: 'Done',
+    },
     sort: {
       button: 'Sort',
       title: 'Sort by',

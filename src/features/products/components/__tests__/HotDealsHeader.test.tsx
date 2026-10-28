@@ -14,12 +14,16 @@ const { act } = ReactTestRenderer;
 async function renderHeader({
   query = '',
   onChangeQuery = jest.fn(),
+  filterCount = 0,
+  onPressFilter = jest.fn(),
   sort = 'recommended',
   onPressSort = jest.fn(),
   language,
 }: {
   query?: string;
   onChangeQuery?: (query: string) => void;
+  filterCount?: number;
+  onPressFilter?: () => void;
   sort?: ProductSort;
   onPressSort?: () => void;
   language?: Language;
@@ -32,6 +36,8 @@ async function renderHeader({
           <HotDealsHeader
             query={query}
             onChangeQuery={onChangeQuery}
+            filterCount={filterCount}
+            onPressFilter={onPressFilter}
             sort={sort}
             onPressSort={onPressSort}
           />
@@ -86,6 +92,23 @@ test('reports what is typed', async () => {
   expect(onChangeQuery).toHaveBeenCalledWith('ring');
 });
 
+test('opens the filter from its button', async () => {
+  const onPressFilter = jest.fn();
+  const root = await renderHeader({ onPressFilter });
+
+  await act(async () => {
+    findButton(root, 'Filter').props.onPress();
+  });
+
+  expect(onPressFilter).toHaveBeenCalledTimes(1);
+});
+
+test('counts the chosen categories on the filter button', async () => {
+  const root = await renderHeader({ filterCount: 2 });
+
+  expect(findButton(root, 'Filter (2)')).toBeDefined();
+});
+
 test('opens the sort from its button', async () => {
   const onPressSort = jest.fn();
   const root = await renderHeader({ onPressSort });
@@ -110,6 +133,7 @@ test('uses the active language', async () => {
 
   expect(findHeading(root).props.children).toBe('ดีลเด็ด');
   expect(root.findByType(TextInput).props.placeholder).toBe('ค้นหาดีลเด็ด');
+  expect(findButton(root, 'ตัวกรอง')).toBeDefined();
   expect(findButton(root, 'เรียงลำดับ').props.accessibilityValue).toEqual({
     text: 'แนะนำ',
   });

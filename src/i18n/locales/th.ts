@@ -55,6 +55,16 @@ export const th: Messages = {
     loadMoreError: 'โหลดสินค้าเพิ่มไม่สำเร็จ',
     search: 'ค้นหาดีลเด็ด',
     noResults: query => `ไม่พบดีลที่ตรงกับ “${query}”`,
+    noCategoryResults: 'ไม่มีดีลในหมวดหมู่ที่เลือก',
+    filter: {
+      button: count => (count === 0 ? 'ตัวกรอง' : `ตัวกรอง (${count})`),
+      title: 'กรองตามหมวดหมู่',
+      loading: 'กำลังโหลดหมวดหมู่',
+      error: 'โหลดหมวดหมู่ไม่สำเร็จ',
+      empty: 'ยังไม่มีหมวดหมู่',
+      clear: 'ล้าง',
+      done: 'เสร็จสิ้น',
+    },
     sort: {
       button: 'เรียงลำดับ',
       title: 'เรียงตาม',

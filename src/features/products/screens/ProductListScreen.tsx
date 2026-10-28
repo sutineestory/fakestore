@@ -14,6 +14,7 @@ import { useTranslation } from '@/i18n';
 import { makeStyles } from '@/theme';
 import { FavoritesCarousel } from '../components/FavoritesCarousel';
 import { HotDealsHeader } from '../components/HotDealsHeader';
+import { ProductFilterSheet } from '../components/ProductFilterSheet';
 import { ProductListFooter } from '../components/ProductListFooter';
 import { ProductListItem } from '../components/ProductListItem';
 import { ProductSortSheet } from '../components/ProductSortSheet';
@@ -39,12 +40,16 @@ export function ProductListScreen() {
     query,
     setQuery,
     search,
+    categories,
+    toggleCategory,
+    clearCategories,
     sort,
     setSort,
   } = useHotDeals();
-  const [sorting, setSorting] = useState(false);
-  const openSort = useCallback(() => setSorting(true), []);
-  const closeSort = useCallback(() => setSorting(false), []);
+  const [sheet, setSheet] = useState<'filter' | 'sort' | null>(null);
+  const openFilter = useCallback(() => setSheet('filter'), []);
+  const openSort = useCallback(() => setSheet('sort'), []);
+  const closeSheet = useCallback(() => setSheet(null), []);
 
   const openProduct = useCallback(
     (id: number) => navigation.navigate('ProductDetail', { id }),
@@ -55,6 +60,12 @@ export function ProductListScreen() {
     ({ item }) => <ProductListItem product={item} onPress={openProduct} />,
     [openProduct],
   );
+
+  const emptyMessage = search
+    ? t.productList.noResults(search)
+    : categories.length > 0
+    ? t.productList.noCategoryResults
+    : t.productList.empty;
 
   return (
     <Screen padded={false}>
@@ -70,6 +81,8 @@ export function ProductListScreen() {
             <HotDealsHeader
               query={query}
               onChangeQuery={setQuery}
+              filterCount={categories.length}
+              onPressFilter={openFilter}
               sort={sort}
               onPressSort={openSort}
             />
@@ -84,9 +97,7 @@ export function ProductListScreen() {
               loadingLabel={t.productList.loading}
               errorMessage={t.productList.error}
               retryLabel={t.common.retry}
-              emptyMessage={
-                search ? t.productList.noResults(search) : t.productList.empty
-              }
+              emptyMessage={emptyMessage}
               onRetry={retry}
             />
           )
@@ -107,11 +118,18 @@ export function ProductListScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={refresh} />
         }
       />
+      <ProductFilterSheet
+        visible={sheet === 'filter'}
+        selected={categories}
+        onToggle={toggleCategory}
+        onClear={clearCategories}
+        onClose={closeSheet}
+      />
       <ProductSortSheet
-        visible={sorting}
+        visible={sheet === 'sort'}
         value={sort}
         onChange={setSort}
-        onClose={closeSort}
+        onClose={closeSheet}
       />
     </Screen>
   );
