@@ -3,6 +3,7 @@ import type { Messages } from './en';
 export const th: Messages = {
   tabs: {
     home: 'หน้าแรก',
+    products: 'สินค้า',
     settings: 'การตั้งค่า',
   },
   home: {
@@ -38,6 +39,9 @@ export const th: Messages = {
     },
     goBack: 'ย้อนกลับ',
     openSettings: 'เปิดการตั้งค่า',
+  },
+  productDetail: {
+    title: 'รายละเอียดสินค้า',
   },
   favorites: {
     add: 'เพิ่มในรายการโปรด',

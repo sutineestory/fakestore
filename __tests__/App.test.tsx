@@ -103,6 +103,21 @@ test('opens the sample list from Home', async () => {
   });
 });
 
+test('switches to the Products tab', async () => {
+  const renderer = await renderApp();
+
+  expect(findTab(renderer.root, 'Products').props['aria-selected']).toBe(false);
+
+  await press(findTab(renderer.root, 'Products'));
+
+  expect(findTab(renderer.root, 'Products').props['aria-selected']).toBe(true);
+  expect(findTab(renderer.root, 'Home').props['aria-selected']).toBe(false);
+
+  await act(async () => {
+    renderer.unmount();
+  });
+});
+
 test('stars an item on Home once it is favorited on Details', async () => {
   const renderer = await renderApp();
 

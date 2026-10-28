@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useMemo } from 'react';
 
+import { ProductDetailScreen } from '@/features/products';
 import { SampleScreen } from '@/features/sample';
 import { useTranslation } from '@/i18n';
 import { DetailsScreen } from '@/screens/DetailsScreen';
@@ -34,6 +35,11 @@ export function RootNavigator() {
           name="Details"
           component={DetailsScreen}
           options={({ route }) => ({ title: route.params.title })}
+        />
+        <Stack.Screen
+          name="ProductDetail"
+          component={ProductDetailScreen}
+          options={{ title: t.productDetail.title }}
         />
         <Stack.Screen
           name="Sample"

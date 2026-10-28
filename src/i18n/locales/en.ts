@@ -2,6 +2,7 @@
 export const en = {
   tabs: {
     home: 'Home',
+    products: 'Products',
     settings: 'Settings',
   },
   home: {
@@ -38,6 +39,9 @@ export const en = {
     },
     goBack: 'Go back',
     openSettings: 'Open Settings',
+  },
+  productDetail: {
+    title: 'Product details',
   },
   favorites: {
     add: 'Add to favorites',

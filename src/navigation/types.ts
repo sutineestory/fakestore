@@ -7,12 +7,14 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type MainTabParamList = {
   Home: undefined;
+  ProductList: undefined;
   Settings: undefined;
 };
 
 export type RootStackParamList = {
   MainTabs: NavigatorScreenParams<MainTabParamList>;
   Details: { id: string; title: string };
+  ProductDetail: { id: number };
   Sample: undefined;
 };
 
