@@ -4,6 +4,7 @@ export const th: Messages = {
   common: {
     retry: 'ลองอีกครั้ง',
     ok: 'เข้าใจแล้ว',
+    cart: 'ตะกร้า',
   },
   tabs: {
     home: 'หน้าแรก',

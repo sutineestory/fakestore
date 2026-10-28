@@ -159,6 +159,32 @@ test('lists products from the store on the Products tab', async () => {
   });
 });
 
+test('shows a cart button in the Products and detail headers', async () => {
+  const renderer = await renderApp();
+  const cartButtons = () =>
+    renderer.root.findAll(
+      node =>
+        node.props.accessibilityLabel === 'Cart' &&
+        node.props.accessibilityRole === 'button' &&
+        typeof node.type === 'string',
+    );
+
+  expect(cartButtons()).toHaveLength(0);
+
+  await press(findTab(renderer.root, 'Products'));
+
+  expect(cartButtons()).toHaveLength(1);
+
+  await press(findButton(renderer.root, 'Product 2'));
+
+  // The detail header adds its own; the tab header stays mounted beneath.
+  expect(cartButtons()).toHaveLength(2);
+
+  await act(async () => {
+    renderer.unmount();
+  });
+});
+
 test('favorites a product from its detail screen', async () => {
   const renderer = await renderApp();
 

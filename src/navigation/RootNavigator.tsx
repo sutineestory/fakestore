@@ -7,6 +7,7 @@ import { SampleScreen } from '@/features/sample';
 import { useTranslation } from '@/i18n';
 import { DetailsScreen } from '@/screens/DetailsScreen';
 import { useTheme } from '@/theme';
+import { headerCartButton } from './headerCartButton';
 import { MainTabs } from './MainTabs';
 import { toNavigationTheme } from './navigationTheme';
 import type { RootStackParamList } from './types';
@@ -39,7 +40,10 @@ export function RootNavigator() {
         <Stack.Screen
           name="ProductDetail"
           component={ProductDetailScreen}
-          options={{ title: t.productDetail.title }}
+          options={{
+            title: t.productDetail.title,
+            headerRight: headerCartButton,
+          }}
         />
         <Stack.Screen
           name="Sample"

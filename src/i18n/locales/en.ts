@@ -3,6 +3,7 @@ export const en = {
   common: {
     retry: 'Try again',
     ok: 'Got it',
+    cart: 'Cart',
   },
   tabs: {
     home: 'Home',
