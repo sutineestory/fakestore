@@ -9,7 +9,7 @@ import { useCachedProducts } from '../hooks/useCachedProducts';
 import { selectRecentFavoriteProductIds } from '../selectRecentFavoriteProductIds';
 import { FavoritesRow } from './FavoritesRow';
 
-const MAX_FAVORITES = 10;
+const MAX_FAVORITES = 5;
 
 type FavoritesCarouselProps = {
   onPressProduct: (id: number) => void;

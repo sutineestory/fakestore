@@ -91,14 +91,14 @@ test('shows the newest favorites first, ignoring Home items', async () => {
   expect(cardIds(root)).toEqual([7, 1, 4]);
 });
 
-test('shows at most ten favorites', async () => {
+test('shows at most five favorites', async () => {
   mockFetchProducts.mockResolvedValue(makeProducts(1, 20));
 
   const root = await renderCarousel({
     initialFavoriteIds: favoritesOf(makeProducts(1, 12).map(p => p.id)),
   });
 
-  expect(cardIds(root)).toEqual([12, 11, 10, 9, 8, 7, 6, 5, 4, 3]);
+  expect(cardIds(root)).toEqual([12, 11, 10, 9, 8]);
 });
 
 test('fetches favorites the list has not loaded yet', async () => {
