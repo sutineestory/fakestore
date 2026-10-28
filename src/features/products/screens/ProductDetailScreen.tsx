@@ -72,7 +72,7 @@ export function ProductDetailScreen({
           <Chip label={product.category} />
           <Text variant="heading">{product.title}</Text>
           <Stack direction="row" justify="space-between" align="center">
-            <ProductRating rating={product.rating} />
+            <ProductRating rating={product.rating} variant="stars" />
             <Text variant="heading" color="primary">
               {formatPrice(product.price, language)}
             </Text>
