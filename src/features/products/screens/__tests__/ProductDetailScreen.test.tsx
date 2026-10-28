@@ -89,7 +89,7 @@ test('shows everything about a listed product', async () => {
     'Mens Cotton Jacket',
     '$55.99',
     'Add to favorites',
-    'Rated 4.7 out of 5 · 500 reviews',
+    '4.7 (500)',
     'Great outerwear jackets.',
   ]);
   expect(mockFetchProduct).not.toHaveBeenCalled();
@@ -164,5 +164,9 @@ test('uses the active language', async () => {
 
   expect(texts(root)).toContain('US$3.50');
   expect(texts(root)).toContain('สินค้ารหัส 3');
-  expect(texts(root)).toContain('คะแนน 4.1 จาก 5 · 30 รีวิว');
+  expect(
+    root.findAll(
+      node => node.props.accessibilityLabel === 'คะแนน 4.1 จาก 5 · 30 รีวิว',
+    ),
+  ).not.toHaveLength(0);
 });

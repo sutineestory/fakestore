@@ -5,6 +5,7 @@ import { FavoriteButton } from '@/features/favorites';
 import { useLanguage, useTranslation } from '@/i18n';
 import type { RootStackScreenProps } from '@/navigation';
 import { makeStyles } from '@/theme';
+import { ProductRating } from '../components/ProductRating';
 import { formatPrice } from '../formatPrice';
 import { useProduct } from '../hooks/useProduct';
 import { productFavoriteId } from '../productFavoriteId';
@@ -61,9 +62,7 @@ export function ProductDetailScreen({
         <FavoriteButton id={productFavoriteId(product.id)} />
 
         <Stack gap="sm">
-          <Text variant="bodySmall" color="textMuted">
-            {t.productDetail.rating(product.rating.rate, product.rating.count)}
-          </Text>
+          <ProductRating rating={product.rating} />
           <Text>{product.description}</Text>
         </Stack>
       </Stack>
