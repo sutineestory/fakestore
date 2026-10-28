@@ -1,3 +1,4 @@
+export { BottomSheet, type BottomSheetProps } from './BottomSheet';
 export {
   Button,
   type ButtonProps,

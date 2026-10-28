@@ -17,6 +17,7 @@ const lightColors = {
   warning: palette.amber[600],
   favorite: palette.red[600],
   media: palette.white,
+  scrim: palette.scrim,
 };
 
 export type ColorTokens = Record<keyof typeof lightColors, string>;
@@ -39,6 +40,7 @@ const darkColors: ColorTokens = {
   favorite: palette.red[400],
   // Product photos are shot on white; keep their backdrop white in dark mode too.
   media: palette.white,
+  scrim: palette.scrim,
 };
 
 export type Theme = {

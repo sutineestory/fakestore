@@ -5,6 +5,8 @@
 export const palette = {
   white: '#FFFFFF',
   black: '#000000',
+  // neutral[950] at half opacity, for dimming what's behind a sheet.
+  scrim: 'rgba(2, 6, 23, 0.5)',
   neutral: {
     50: '#F8FAFC',
     100: '#F1F5F9',
