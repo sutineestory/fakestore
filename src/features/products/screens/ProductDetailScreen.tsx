@@ -10,7 +10,7 @@ import {
   Stack,
   Text,
 } from '@/components';
-import { FavoriteButton } from '@/features/favorites';
+import { FavoriteIconButton } from '@/features/favorites';
 import { useLanguage, useTranslation } from '@/i18n';
 import type { RootStackScreenProps } from '@/navigation';
 import { makeStyles } from '@/theme';
@@ -49,17 +49,11 @@ export function ProductDetailScreen({
       scroll
       edges={['left', 'right', 'bottom']}
       footer={
-        <Stack direction="row" gap="sm">
-          <View style={styles.action}>
-            <FavoriteButton id={productFavoriteId(product.id)} />
-          </View>
-          {/* Placeholder until there is a cart to add to. */}
-          <Button
-            title={t.productDetail.addToCart}
-            icon={<Icon icon={ShoppingCartIcon} color="onPrimary" />}
-            style={styles.action}
-          />
-        </Stack>
+        // Placeholder until there is a cart to add to.
+        <Button
+          title={t.productDetail.addToCart}
+          icon={<Icon icon={ShoppingCartIcon} color="onPrimary" />}
+        />
       }
     >
       <Stack gap="xl">
@@ -69,6 +63,9 @@ export function ProductDetailScreen({
             resizeMode="contain"
             style={styles.image}
           />
+          <View style={styles.favorite}>
+            <FavoriteIconButton id={productFavoriteId(product.id)} />
+          </View>
         </View>
 
         <Stack gap="sm">
@@ -96,5 +93,5 @@ const useStyles = makeStyles(({ colors, spacing, radii }) => ({
     backgroundColor: colors.media,
   },
   image: { flex: 1 },
-  action: { flex: 1 },
+  favorite: { position: 'absolute', top: spacing.sm, right: spacing.sm },
 }));

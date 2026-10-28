@@ -50,6 +50,14 @@ function findButton(root: ReactTestInstance, text: string) {
   );
 }
 
+function findLabelled(root: ReactTestInstance, label: string) {
+  return root.find(
+    node =>
+      node.props.accessibilityLabel === label &&
+      typeof node.props.onPress === 'function',
+  );
+}
+
 function findTab(root: ReactTestInstance, label: string) {
   // Tab items nest several pressables; the outermost one handles the press.
   const [tab] = root.findAll(
@@ -159,9 +167,9 @@ test('favorites a product from its detail screen', async () => {
 
   expect(hasText(renderer.root, 'Description of product 2.')).toBe(true);
 
-  await press(findButton(renderer.root, 'Add to favorites'));
+  await press(findLabelled(renderer.root, 'Add to favorites'));
 
-  expect(hasText(renderer.root, 'Remove from favorites')).toBe(true);
+  expect(findLabelled(renderer.root, 'Remove from favorites')).toBeTruthy();
 
   await act(async () => {
     renderer.unmount();
@@ -172,7 +180,7 @@ test('keeps favorites after the app restarts', async () => {
   const first = await renderApp();
   await press(findTab(first.root, 'Products'));
   await press(findButton(first.root, 'Product 2'));
-  await press(findButton(first.root, 'Add to favorites'));
+  await press(findLabelled(first.root, 'Add to favorites'));
   await act(async () => {
     first.unmount();
   });

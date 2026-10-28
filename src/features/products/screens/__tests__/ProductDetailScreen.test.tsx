@@ -44,6 +44,21 @@ function texts(root: ReactTestInstance) {
   return root.findAllByType(Text).map(text => text.props.children);
 }
 
+/** The heart on the image has no text, only an accessibility label. */
+function findLabelled(root: ReactTestInstance, label: string) {
+  return root.find(
+    node =>
+      node.props.accessibilityLabel === label &&
+      typeof node.props.onPress === 'function',
+  );
+}
+
+function hasLabel(root: ReactTestInstance, label: string) {
+  return (
+    root.findAll(node => node.props.accessibilityLabel === label).length > 0
+  );
+}
+
 function findButton(root: ReactTestInstance, label: string) {
   return root.find(
     node =>
@@ -89,7 +104,6 @@ test('shows everything about a listed product', async () => {
     '4.7 (500)',
     '$55.99',
     'Great outerwear jackets.',
-    'Add to favorites',
     'Add to cart',
   ]);
   expect(mockFetchProduct).not.toHaveBeenCalled();
@@ -114,22 +128,22 @@ test('toggles the product as a favorite, apart from Home item 3', async () => {
   const root = await renderDetail(3, { initialFavoriteIds: ['3'] });
 
   await act(async () => {
-    findButton(root, 'Add to favorites').props.onPress();
+    findLabelled(root, 'Add to favorites').props.onPress();
   });
 
-  expect(texts(root)).toContain('Remove from favorites');
+  expect(hasLabel(root, 'Remove from favorites')).toBe(true);
 
   await act(async () => {
-    findButton(root, 'Remove from favorites').props.onPress();
+    findLabelled(root, 'Remove from favorites').props.onPress();
   });
 
-  expect(texts(root)).toContain('Add to favorites');
+  expect(hasLabel(root, 'Add to favorites')).toBe(true);
 });
 
 test('starts as a favorite when it already is one', async () => {
   const root = await renderDetail(3, { initialFavoriteIds: ['product:3'] });
 
-  expect(texts(root)).toContain('Remove from favorites');
+  expect(hasLabel(root, 'Remove from favorites')).toBe(true);
 });
 
 test('fetches a product that is not in the loaded list', async () => {
