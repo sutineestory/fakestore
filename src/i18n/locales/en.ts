@@ -55,7 +55,6 @@ export const en = {
   },
   productDetail: {
     title: 'Product details',
-    productNumber: (id: number) => `Product #${id}`,
     loading: 'Loading the product',
     error: 'Couldn’t load this product.',
     notFound: 'This product doesn’t exist any more.',

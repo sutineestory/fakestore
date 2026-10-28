@@ -55,7 +55,6 @@ export const th: Messages = {
   },
   productDetail: {
     title: 'รายละเอียดสินค้า',
-    productNumber: id => `สินค้ารหัส ${id}`,
     loading: 'กำลังโหลดสินค้า',
     error: 'โหลดสินค้านี้ไม่สำเร็จ',
     notFound: 'ไม่พบสินค้านี้แล้ว',
