@@ -15,6 +15,7 @@ const lightColors = {
   onDanger: palette.white,
   success: palette.green[600],
   warning: palette.amber[600],
+  favorite: palette.red[600],
 };
 
 export type ColorTokens = Record<keyof typeof lightColors, string>;
@@ -34,6 +35,7 @@ const darkColors: ColorTokens = {
   onDanger: palette.neutral[950],
   success: palette.green[400],
   warning: palette.amber[400],
+  favorite: palette.red[400],
 };
 
 export type Theme = {

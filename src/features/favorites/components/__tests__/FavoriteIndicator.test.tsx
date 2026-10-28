@@ -4,16 +4,26 @@ import ReactTestRenderer, {
 } from 'react-test-renderer';
 
 import { LanguageProvider, type Language } from '@/i18n';
-import { ThemeProvider } from '@/theme';
+import {
+  darkTheme,
+  lightTheme,
+  ThemeProvider,
+  type ColorSchemePreference,
+} from '@/theme';
 import { FavoriteIndicator } from '../FavoriteIndicator';
 
 const { act } = ReactTestRenderer;
 
-async function renderIndicator(language?: Language) {
+type RenderOptions = {
+  language?: Language;
+  preference?: ColorSchemePreference;
+};
+
+async function renderIndicator({ language, preference }: RenderOptions = {}) {
   let renderer!: Renderer;
   await act(async () => {
     renderer = ReactTestRenderer.create(
-      <ThemeProvider>
+      <ThemeProvider initialPreference={preference}>
         <LanguageProvider initialLanguage={language}>
           <FavoriteIndicator />
         </LanguageProvider>
@@ -36,7 +46,21 @@ test('announces itself as a favorite', async () => {
 });
 
 test('uses the active language', async () => {
-  const root = await renderIndicator('th');
+  const root = await renderIndicator({ language: 'th' });
 
   expect(labels(root)).toContain('รายการโปรด');
+});
+
+test('draws a heart filled with the favorite color', async () => {
+  const light = await renderIndicator({ preference: 'light' });
+
+  expect(
+    light.findAll(node => node.props.fill === lightTheme.colors.favorite),
+  ).not.toHaveLength(0);
+
+  const dark = await renderIndicator({ preference: 'dark' });
+
+  expect(
+    dark.findAll(node => node.props.fill === darkTheme.colors.favorite),
+  ).not.toHaveLength(0);
 });
