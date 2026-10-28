@@ -9,14 +9,14 @@ import {
   RequestStatus,
   Screen,
   Stack,
-  Text,
 } from '@/components';
 import { useTranslation } from '@/i18n';
 import { makeStyles } from '@/theme';
 import { FavoritesCarousel } from '../components/FavoritesCarousel';
+import { HotDealsHeader } from '../components/HotDealsHeader';
 import { ProductListFooter } from '../components/ProductListFooter';
 import { ProductListItem } from '../components/ProductListItem';
-import { useProducts } from '../ProductsProvider';
+import { useHotDeals } from '../hooks/useHotDeals';
 import type { Product } from '../types';
 
 const keyExtractor = (product: Product) => String(product.id);
@@ -35,7 +35,10 @@ export function ProductListScreen() {
     retryLoadMore,
     refresh,
     retry,
-  } = useProducts();
+    query,
+    setQuery,
+    search,
+  } = useHotDeals();
 
   const openProduct = useCallback(
     (id: number) => navigation.navigate('ProductDetail', { id }),
@@ -58,21 +61,24 @@ export function ProductListScreen() {
           <Stack gap="lg">
             <FavoritesCarousel onPressProduct={openProduct} />
             <Divider />
-            <Text variant="heading" accessibilityRole="header">
-              {t.productList.hotDeals}
-            </Text>
+            <HotDealsHeader query={query} onChangeQuery={setQuery} />
           </Stack>
         }
         ListHeaderComponentStyle={styles.header}
         ListEmptyComponent={
-          <RequestStatus
-            status={status}
-            loadingLabel={t.productList.loading}
-            errorMessage={t.productList.error}
-            retryLabel={t.common.retry}
-            emptyMessage={t.productList.empty}
-            onRetry={retry}
-          />
+          // The footer's spinner already shows while more pages are searched.
+          loadingMore ? undefined : (
+            <RequestStatus
+              status={status}
+              loadingLabel={t.productList.loading}
+              errorMessage={t.productList.error}
+              retryLabel={t.common.retry}
+              emptyMessage={
+                search ? t.productList.noResults(search) : t.productList.empty
+              }
+              onRetry={retry}
+            />
+          )
         }
         ListFooterComponent={
           <ProductListFooter
@@ -82,6 +88,8 @@ export function ProductListScreen() {
           />
         }
         contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
         refreshControl={

@@ -53,6 +53,8 @@ export const th: Messages = {
     error: 'โหลดสินค้าไม่สำเร็จ',
     empty: 'ยังไม่มีสินค้า',
     loadMoreError: 'โหลดสินค้าเพิ่มไม่สำเร็จ',
+    search: 'ค้นหาดีลเด็ด',
+    noResults: query => `ไม่พบดีลที่ตรงกับ “${query}”`,
     rating: (rate, count) => `${rate.toFixed(1)} (${count})`,
   },
   productDetail: {

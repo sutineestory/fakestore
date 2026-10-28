@@ -53,6 +53,8 @@ export const en = {
     error: 'Couldn’t load the products.',
     empty: 'No products yet.',
     loadMoreError: 'Couldn’t load more products.',
+    search: 'Search hot deals',
+    noResults: (query: string) => `No hot deals match “${query}”.`,
     rating: (rate: number, count: number) => `${rate.toFixed(1)} (${count})`,
   },
   productDetail: {

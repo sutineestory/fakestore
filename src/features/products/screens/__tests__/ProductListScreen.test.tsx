@@ -3,6 +3,7 @@ import {
   FlatList,
   RefreshControl,
   Text,
+  TextInput,
 } from 'react-native';
 import ReactTestRenderer, {
   type ReactTestInstance,
@@ -71,6 +72,32 @@ async function reachEnd(root: ReactTestInstance) {
   await act(async () => {
     root.findByType(FlatList).props.onEndReached({ distanceFromEnd: 0 });
   });
+}
+
+async function search(root: ReactTestInstance, query: string) {
+  await act(async () => {
+    root.findByType(TextInput).props.onChangeText(query);
+  });
+}
+
+/**
+ * Queues the two pages a search loads after the first (20 products, then the
+ * same 20 again); the returned function answers them.
+ */
+function queueRemainingPages() {
+  const second = nextRequest();
+  const third = nextRequest();
+  return async () => {
+    await act(async () => second.resolve(makeProducts(1, 20)));
+    await act(async () => third.resolve(makeProducts(1, 20)));
+  };
+}
+
+// Rows past the first screenful only mount after a real layout, so check what
+// the list was given rather than what it has drawn.
+function listedIds(root: ReactTestInstance) {
+  const listed: Product[] = root.findByType(FlatList).props.data;
+  return listed.map(product => product.id);
 }
 
 // FlatList renders more rows on a timer; fake timers keep that from firing
@@ -158,12 +185,7 @@ test('loads ten more products at the end of the list', async () => {
   await act(async () => more.resolve(makeProducts(1, 20)));
 
   expect(root.findAllByType(ActivityIndicator)).toHaveLength(0);
-  // Rows past the first screenful only mount after a real layout, so check
-  // what the list was given rather than what it has drawn.
-  const listed: Product[] = root.findByType(FlatList).props.data;
-  expect(listed.map(product => product.id)).toEqual(
-    makeProducts(1, 20).map(product => product.id),
-  );
+  expect(listedIds(root)).toEqual(makeProducts(1, 20).map(p => p.id));
 });
 
 test('keeps the rows and offers a retry when a page fails', async () => {
@@ -235,4 +257,54 @@ test('opens a product when its row is pressed', async () => {
   });
 
   expect(hasText(root, 'Opened product 4')).toBe(true);
+});
+
+test('searches every hot deal by title, not just the loaded page', async () => {
+  const root = await renderLoadedScreen();
+
+  const finishLoading = queueRemainingPages();
+  await search(root, ' product 1 ');
+
+  expect(listedIds(root)).toEqual([1, 10]);
+  expect(mockFetchProducts).toHaveBeenLastCalledWith(20);
+
+  await finishLoading();
+
+  expect(listedIds(root)).toEqual([1, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
+});
+
+test('says a search found nothing only once every page is searched', async () => {
+  const root = await renderLoadedScreen();
+
+  const finishLoading = queueRemainingPages();
+  await search(root, 'lamp');
+
+  expect(hasText(root, 'No hot deals match “lamp”.')).toBe(false);
+  expect(root.findAllByType(ActivityIndicator)).toHaveLength(1);
+
+  await finishLoading();
+
+  expect(hasText(root, 'No hot deals match “lamp”.')).toBe(true);
+  expect(root.findAllByType(ActivityIndicator)).toHaveLength(0);
+});
+
+test('says what found nothing in the active language', async () => {
+  const root = await renderLoadedScreen({ language: 'th' });
+
+  const finishLoading = queueRemainingPages();
+  await search(root, 'lamp');
+  await finishLoading();
+
+  expect(hasText(root, 'ไม่พบดีลที่ตรงกับ “lamp”')).toBe(true);
+});
+
+test('lists every hot deal again once the search is cleared', async () => {
+  const root = await renderLoadedScreen();
+  const finishLoading = queueRemainingPages();
+  await search(root, 'product 2');
+  await finishLoading();
+
+  await search(root, '');
+
+  expect(listedIds(root)).toEqual(makeProducts(1, 20).map(p => p.id));
 });
