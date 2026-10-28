@@ -5,11 +5,10 @@ import { Button, Stack, Text } from '@/components';
 import { useFavorites } from '@/features/favorites';
 import { useTranslation } from '@/i18n';
 import { useTheme } from '@/theme';
+import { MAX_FAVORITE_PRODUCTS } from '../favoriteLimit';
 import { useCachedProducts } from '../hooks/useCachedProducts';
 import { selectRecentFavoriteProductIds } from '../selectRecentFavoriteProductIds';
 import { FavoritesRow } from './FavoritesRow';
-
-const MAX_FAVORITES = 5;
 
 type FavoritesCarouselProps = {
   onPressProduct: (id: number) => void;
@@ -20,7 +19,7 @@ export function FavoritesCarousel({ onPressProduct }: FavoritesCarouselProps) {
   const t = useTranslation();
   const { favoriteIds } = useFavorites();
   const ids = useMemo(
-    () => selectRecentFavoriteProductIds(favoriteIds, MAX_FAVORITES),
+    () => selectRecentFavoriteProductIds(favoriteIds, MAX_FAVORITE_PRODUCTS),
     [favoriteIds],
   );
   const { status, products, retry } = useCachedProducts(ids);

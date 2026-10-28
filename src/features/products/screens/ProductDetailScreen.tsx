@@ -18,6 +18,7 @@ import type { RootStackScreenProps } from '@/navigation';
 import { makeStyles } from '@/theme';
 import { ProductRating } from '../components/ProductRating';
 import { formatPrice } from '../formatPrice';
+import { useFavoriteProductLimit } from '../hooks/useFavoriteProductLimit';
 import { useProduct } from '../hooks/useProduct';
 import { productFavoriteId } from '../productFavoriteId';
 
@@ -33,6 +34,7 @@ export function ProductDetailScreen({
   const [viewingImage, setViewingImage] = useState(false);
   const openImage = useCallback(() => setViewingImage(true), []);
   const closeImage = useCallback(() => setViewingImage(false), []);
+  const beforeAddFavorite = useFavoriteProductLimit();
 
   if (!product) {
     return (
@@ -76,7 +78,10 @@ export function ProductDetailScreen({
             />
           </Pressable>
           <View style={styles.favorite}>
-            <FavoriteIconButton id={productFavoriteId(product.id)} />
+            <FavoriteIconButton
+              id={productFavoriteId(product.id)}
+              beforeAdd={beforeAddFavorite}
+            />
           </View>
         </View>
 

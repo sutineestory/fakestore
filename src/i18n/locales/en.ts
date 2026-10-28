@@ -68,6 +68,9 @@ export const en = {
     label: 'Favorite',
     add: 'Add to favorites',
     remove: 'Remove from favorites',
+    fullTitle: 'Favorites are full',
+    fullMessage: (max: number) =>
+      `You can keep up to ${max} favorites. Remove one to add another.`,
   },
   sample: {
     title: 'Sample list',

@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { ActivityIndicator, Image, Modal, Text } from 'react-native';
+import { ActivityIndicator, Alert, Image, Modal, Text } from 'react-native';
 import ReactTestRenderer, {
   type ReactTestInstance,
   type ReactTestRenderer as Renderer,
@@ -156,6 +156,50 @@ test('toggles the product as a favorite, apart from Home item 3', async () => {
   });
 
   expect(hasLabel(root, 'Add to favorites')).toBe(true);
+});
+
+describe('with five favorites already', () => {
+  const FULL = [
+    'product:1',
+    'product:2',
+    'product:3',
+    'product:4',
+    'product:5',
+  ];
+  let alert: jest.SpyInstance;
+
+  beforeEach(() => {
+    alert = jest.spyOn(Alert, 'alert').mockImplementation();
+  });
+
+  afterEach(() => {
+    alert.mockRestore();
+  });
+
+  test('refuses a sixth and says why', async () => {
+    const root = await renderDetail(6, { initialFavoriteIds: FULL });
+
+    await act(async () => {
+      findLabelled(root, 'Add to favorites').props.onPress();
+    });
+
+    expect(alert).toHaveBeenCalledWith(
+      'Favorites are full',
+      'You can keep up to 5 favorites. Remove one to add another.',
+    );
+    expect(hasLabel(root, 'Add to favorites')).toBe(true);
+  });
+
+  test('still removes one of them', async () => {
+    const root = await renderDetail(3, { initialFavoriteIds: FULL });
+
+    await act(async () => {
+      findLabelled(root, 'Remove from favorites').props.onPress();
+    });
+
+    expect(alert).not.toHaveBeenCalled();
+    expect(hasLabel(root, 'Add to favorites')).toBe(true);
+  });
 });
 
 test('starts as a favorite when it already is one', async () => {
