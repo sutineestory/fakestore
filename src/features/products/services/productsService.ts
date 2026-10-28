@@ -52,3 +52,9 @@ export async function fetchProduct(id: number): Promise<Product | null> {
   const body = await response.text();
   return body ? toProduct(JSON.parse(body)) : null;
 }
+
+/** Every category the API files products under, e.g. `"jewelery"`. */
+export async function fetchCategories(): Promise<string[]> {
+  const response = await get(`${API_URL}/categories`);
+  return response.json();
+}

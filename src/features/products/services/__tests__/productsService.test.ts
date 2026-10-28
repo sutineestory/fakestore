@@ -1,5 +1,9 @@
 import type { Product } from '../../types';
-import { fetchProduct, fetchProducts } from '../productsService';
+import {
+  fetchCategories,
+  fetchProduct,
+  fetchProducts,
+} from '../productsService';
 
 const PRODUCT: Product = {
   id: 1,
@@ -90,6 +94,35 @@ describe('fetchProduct', () => {
 
     await expect(fetchProduct(1)).rejects.toThrow(
       'Request failed with status 404',
+    );
+  });
+});
+
+describe('fetchCategories', () => {
+  test('asks the API for the categories as JSON', async () => {
+    respondWith(JSON.stringify(['electronics', 'jewelery']));
+
+    await expect(fetchCategories()).resolves.toEqual([
+      'electronics',
+      'jewelery',
+    ]);
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://fakestoreapi.com/products/categories',
+      { headers: { Accept: 'application/json' } },
+    );
+  });
+
+  test('resolves with no categories when the API has none', async () => {
+    respondWith('[]');
+
+    await expect(fetchCategories()).resolves.toEqual([]);
+  });
+
+  test('rejects with the status of a failed response', async () => {
+    respondWith('Server error', 500);
+
+    await expect(fetchCategories()).rejects.toThrow(
+      'Request failed with status 500',
     );
   });
 });
