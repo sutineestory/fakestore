@@ -65,6 +65,17 @@ export const th: Messages = {
     notFound: 'ไม่พบสินค้านี้แล้ว',
     rating: (rate, count) => `คะแนน ${rate.toFixed(1)} จาก 5 · ${count} รีวิว`,
   },
+  cart: {
+    title: 'ตะกร้า',
+    loading: 'กำลังโหลดตะกร้า',
+    error: 'โหลดตะกร้าไม่สำเร็จ',
+    empty: 'ยังไม่มีสินค้าในตะกร้า',
+    itemCount: count => `${count} รายการ`,
+    removeItem: title => `นำ ${title} ออกจากตะกร้า`,
+    removeAll: 'ลบทั้งหมด',
+    total: 'ยอดรวม',
+    submit: 'สั่งซื้อ',
+  },
   favorites: {
     label: 'รายการโปรด',
     add: 'เพิ่มในรายการโปรด',

@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useMemo } from 'react';
 
-import { ProductDetailScreen } from '@/features/products';
+import { CartScreen, ProductDetailScreen } from '@/features/products';
 import { SampleScreen } from '@/features/sample';
 import { useTranslation } from '@/i18n';
 import { DetailsScreen } from '@/screens/DetailsScreen';
@@ -44,6 +44,11 @@ export function RootNavigator() {
             title: t.productDetail.title,
             headerRight: headerCartButton,
           }}
+        />
+        <Stack.Screen
+          name="Cart"
+          component={CartScreen}
+          options={{ title: t.cart.title }}
         />
         <Stack.Screen
           name="Sample"

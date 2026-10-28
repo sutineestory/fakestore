@@ -9,6 +9,7 @@ import ReactTestRenderer, {
   type ReactTestRenderer as Renderer,
 } from 'react-test-renderer';
 
+import { CartProvider } from '@/features/cart';
 import { FavoritesProvider } from '@/features/favorites';
 import { LanguageProvider, type Language } from '@/i18n';
 import { ThemeProvider } from '@/theme';
@@ -39,13 +40,14 @@ export function makeProducts(from: number, to: number): Product[] {
 
 export type RenderOptions = {
   initialFavoriteIds?: string[];
+  initialCartIds?: number[];
   language?: Language;
 };
 
 /** Renders `navigator` inside every provider a products screen needs. */
 export async function renderWithProviders(
   navigator: ReactNode,
-  { initialFavoriteIds, language }: RenderOptions = {},
+  { initialFavoriteIds, initialCartIds, language }: RenderOptions = {},
 ) {
   let renderer!: Renderer;
   await act(async () => {
@@ -54,7 +56,9 @@ export async function renderWithProviders(
         <LanguageProvider initialLanguage={language}>
           <FavoritesProvider initialFavoriteIds={initialFavoriteIds}>
             <ProductsProvider>
-              <NavigationContainer>{navigator}</NavigationContainer>
+              <CartProvider initialIds={initialCartIds}>
+                <NavigationContainer>{navigator}</NavigationContainer>
+              </CartProvider>
             </ProductsProvider>
           </FavoritesProvider>
         </LanguageProvider>
@@ -67,6 +71,7 @@ export async function renderWithProviders(
 type TestStackParamList = {
   Screen: undefined;
   ProductDetail: { id: number };
+  Cart: undefined;
 };
 
 const TestStack = createNativeStackNavigator<TestStackParamList>();
@@ -77,9 +82,13 @@ function OpenedProduct({
   return <Text>{`Opened product ${route.params.id}`}</Text>;
 }
 
+function OpenedCart() {
+  return <Text>Opened cart</Text>;
+}
+
 /**
- * Renders `Screen` as the first route of a stack whose ProductDetail route
- * only says which product was opened.
+ * Renders `Screen` as the first route of a stack whose ProductDetail and Cart
+ * routes only say what was opened.
  */
 export function renderProductsScreen(
   Screen: ComponentType,
@@ -89,6 +98,7 @@ export function renderProductsScreen(
     <TestStack.Navigator>
       <TestStack.Screen name="Screen" component={Screen} />
       <TestStack.Screen name="ProductDetail" component={OpenedProduct} />
+      <TestStack.Screen name="Cart" component={OpenedCart} />
     </TestStack.Navigator>,
     options,
   );

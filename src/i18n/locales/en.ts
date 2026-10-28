@@ -66,6 +66,17 @@ export const en = {
     rating: (rate: number, count: number) =>
       `Rated ${rate.toFixed(1)} out of 5 · ${count} reviews`,
   },
+  cart: {
+    title: 'Cart',
+    loading: 'Loading your cart',
+    error: 'Couldn’t load your cart.',
+    empty: 'Your cart is empty.',
+    itemCount: (count: number) => (count === 1 ? '1 item' : `${count} items`),
+    removeItem: (title: string) => `Remove ${title} from the cart`,
+    removeAll: 'Remove all',
+    total: 'Total',
+    submit: 'Submit order',
+  },
   favorites: {
     label: 'Favorite',
     add: 'Add to favorites',
