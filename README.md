@@ -1,6 +1,8 @@
 # MyApp
 
-Bare React Native app (no Expo) for iOS and Android.
+Bare React Native app (no Expo) for iOS and Android. The **Products** tab lists
+products from the [Fake Store API](https://fakestoreapi.com/products) and lets
+you favorite them; favorites survive restarts.
 
 | | Version |
 | --- | --- |
@@ -31,7 +33,24 @@ npm run ios        # in another terminal
 npm run android
 ```
 
-Re-run `pod install` whenever you add a package with native code.
+Re-run `pod install` whenever you add a package with native code (for example
+`@react-native-async-storage/async-storage`), then rebuild the app and restart
+Metro with `npm start -- --reset-cache`.
+
+## Products & favorites
+
+- **Product list** (Products tab): image, title and price per row. Loads 10
+  products at a time as you scroll, with pull-to-refresh. The API has no offset
+  parameter, so each page asks for a larger `?limit=` and appends the products
+  it hasn't seen; it stops once a page adds nothing new (the store has 20).
+- **Favorites carousel** at the top of the list: the 10 most recently favorited
+  products, with page dots. Hearts on rows and cards mark favorites.
+- **Product detail**: tap a row or card. The Favorite button adds or removes
+  the product, with a small heart animation when adding. Products beyond the
+  loaded pages (e.g. a favorite after a restart) are fetched by id.
+- **Persistence**: favorite ids are stored in AsyncStorage (database
+  `favorites`, key `ids`). Product ids are saved as `product:<id>` so they can't
+  collide with the Home screen's placeholder items.
 
 ## Scripts
 
@@ -47,29 +66,38 @@ Re-run `pod install` whenever you add a package with native code.
 
 ```
 src/
-├── App.tsx              # Providers: SafeArea → Theme → Navigation
+├── App.tsx              # Providers: SafeArea → Theme → Language → Favorites → Products → Navigation
 ├── components/          # Shared UI built on theme tokens
-│   ├── Button.tsx       #   primary | secondary | ghost | danger, sm | md | lg, loading
+│   ├── Button.tsx       #   primary | secondary | ghost | danger, sm | md | lg, loading, leading icon
 │   ├── Card.tsx         #   surface container, optionally pressable
 │   ├── Divider.tsx
 │   ├── Icon.tsx         #   Lucide icon with theme color/size tokens
+│   ├── ListSeparator.tsx#  gap between list rows
+│   ├── PageDots.tsx     #   carousel position dots
+│   ├── RefreshControl.tsx# pull-to-refresh in theme colors
+│   ├── RequestStatus.tsx#  loading / error + retry / empty placeholder
 │   ├── Screen.tsx       #   screen root: background, safe area, scroll, padding
 │   ├── Stack.tsx        #   flex row/column with token-based `gap`
 │   ├── Text.tsx         #   typography `variant` + semantic `color`
 │   └── TextField.tsx    #   label, helper text, error state
+├── features/
+│   ├── favorites/       # Favorite id set (context), AsyncStorage persistence, FavoriteButton
+│   ├── products/        # Fake Store service, paging, ProductsProvider, list/detail screens, carousel
+│   └── sample/          # Mock list with search and pull-to-refresh
 ├── navigation/
-│   ├── RootNavigator.tsx  # Native stack: MainTabs, Details, Sample
-│   ├── MainTabs.tsx       # Bottom tabs: Home, Settings
+│   ├── RootNavigator.tsx  # Native stack: MainTabs, Details, ProductDetail, Sample
+│   ├── MainTabs.tsx       # Bottom tabs: Home, Products, Settings
 │   ├── TabIcon.tsx        # tabIcon(LucideIcon) → tabBarIcon renderer
 │   ├── navigationTheme.ts # Maps design tokens → React Navigation theme
 │   └── types.ts           # Param lists + typed screen props
 ├── screens/             # Placeholder screens: Home, Details, Settings
-└── theme/
-    ├── palette.ts       # Raw colors (do not use in components)
-    ├── tokens.ts        # spacing, radii, typography
-    ├── themes.ts        # Semantic color tokens for light / dark
-    ├── ThemeProvider.tsx# useTheme(), useColorSchemePreference()
-    └── makeStyles.ts    # Theme-aware StyleSheet hook
+├── theme/
+│   ├── palette.ts       # Raw colors (do not use in components)
+│   ├── tokens.ts        # spacing, radii, typography
+│   ├── themes.ts        # Semantic color tokens for light / dark
+│   ├── ThemeProvider.tsx# useTheme(), useColorSchemePreference()
+│   └── makeStyles.ts    # Theme-aware StyleSheet hook
+└── utils/               # Pure helpers (e.g. carouselIndex)
 ```
 
 ## Conventions
