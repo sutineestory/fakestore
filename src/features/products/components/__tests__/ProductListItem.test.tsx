@@ -49,7 +49,11 @@ test('shows the image, title and price', async () => {
   expect(root.findByType(Image).props.source).toEqual({
     uri: 'https://fakestoreapi.com/img/backpack.png',
   });
-  expect(textsOf(root)).toEqual(['Fjallraven Foldsack Backpack', '$109.95']);
+  expect(textsOf(root)).toEqual([
+    'Fjallraven Foldsack Backpack',
+    '4.1 (70)',
+    '$109.95',
+  ]);
 });
 
 test('keeps long titles to two lines', async () => {
@@ -65,6 +69,21 @@ test('writes the price for the active language', async () => {
   const root = await renderItem({ language: 'th' });
 
   expect(textsOf(root)).toContain('US$109.95');
+});
+
+test('shows the rating as a number with its review count', async () => {
+  const root = await renderItem();
+
+  const rating = root.find(
+    node =>
+      node.props.accessible === true &&
+      typeof node.props.accessibilityLabel === 'string' &&
+      node.props.accessibilityLabel.startsWith('Rated'),
+  );
+  expect(rating.props.accessibilityLabel).toBe(
+    'Rated 4.1 out of 5 · 70 reviews',
+  );
+  expect(textsOf(rating)).toEqual(['4.1 (70)']);
 });
 
 test('shows no heart; favorites are marked in the carousel', async () => {

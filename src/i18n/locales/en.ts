@@ -51,6 +51,7 @@ export const en = {
     error: 'Couldn’t load the products.',
     empty: 'No products yet.',
     loadMoreError: 'Couldn’t load more products.',
+    rating: (rate: number, count: number) => `${rate.toFixed(1)} (${count})`,
   },
   productDetail: {
     title: 'Product details',

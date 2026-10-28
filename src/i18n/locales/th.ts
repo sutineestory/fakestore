@@ -51,6 +51,7 @@ export const th: Messages = {
     error: 'โหลดสินค้าไม่สำเร็จ',
     empty: 'ยังไม่มีสินค้า',
     loadMoreError: 'โหลดสินค้าเพิ่มไม่สำเร็จ',
+    rating: (rate, count) => `${rate.toFixed(1)} (${count})`,
   },
   productDetail: {
     title: 'รายละเอียดสินค้า',
