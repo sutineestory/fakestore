@@ -43,6 +43,10 @@ Metro with `npm start -- --reset-cache`.
   products at a time as you scroll, with pull-to-refresh. The API has no offset
   parameter, so each page asks for a larger `?limit=` and appends the products
   it hasn't seen; it stops once a page adds nothing new (the store has 20).
+- **Hot deals search, filter and sort**: search by title, filter by one or more
+  categories (listed by `/products/categories`) and sort by price, rating or
+  name. The API can do none of these, so while any is in use the list loads
+  its remaining pages and refines every product on the device.
 - **Favorites carousel** at the top of the list: the 5 most recently favorited
   products, with page dots and a heart on each card.
 - **Product detail**: tap a row or card. The Favorite button adds or removes
