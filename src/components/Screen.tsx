@@ -6,9 +6,13 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
-import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+  type Edge,
+} from 'react-native-safe-area-context';
 
-import { makeStyles } from '@/theme';
+import { makeStyles, useTheme } from '@/theme';
 
 export type ScreenProps = PropsWithChildren<{
   /** Wrap content in a ScrollView. */
@@ -39,9 +43,17 @@ export function Screen({
   contentContainerStyle,
 }: ScreenProps) {
   const styles = useStyles();
+  const { spacing } = useTheme();
+  const insets = useSafeAreaInsets();
+  // A footer takes over the bottom inset, so its own color reaches the edge
+  // instead of a strip of screen background showing beneath it.
+  const footerOwnsBottom = !!footer && edges.includes('bottom');
+  const safeEdges = footerOwnsBottom
+    ? edges.filter(edge => edge !== 'bottom')
+    : edges;
 
   return (
-    <SafeAreaView edges={edges} style={[styles.container, style]}>
+    <SafeAreaView edges={safeEdges} style={[styles.container, style]}>
       {scroll ? (
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
@@ -64,7 +76,16 @@ export function Screen({
           {children}
         </View>
       )}
-      {footer ? <View style={styles.footer}>{footer}</View> : null}
+      {footer ? (
+        <View
+          style={[
+            styles.footer,
+            footerOwnsBottom && { paddingBottom: spacing.lg + insets.bottom },
+          ]}
+        >
+          {footer}
+        </View>
+      ) : null}
     </SafeAreaView>
   );
 }
