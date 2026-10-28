@@ -42,8 +42,8 @@ function FavoriteProductCardBase({
             <FavoriteIndicator />
           </View>
         </View>
-        <Stack direction="row" gap="xs" align="center">
-          <Text variant="caption" numberOfLines={1} style={styles.title}>
+        <Stack gap="xxs">
+          <Text variant="caption" numberOfLines={1}>
             {product.title}
           </Text>
           <Text variant="caption" color="primary">
@@ -67,5 +67,4 @@ const useStyles = makeStyles(({ colors, spacing, radii }) => ({
   },
   image: { flex: 1 },
   badge: { position: 'absolute', top: spacing.xs, right: spacing.xs },
-  title: { flex: 1 },
 }));
