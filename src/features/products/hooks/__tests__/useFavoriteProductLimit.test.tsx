@@ -1,74 +1,67 @@
-import { Alert } from 'react-native';
 import ReactTestRenderer from 'react-test-renderer';
 
 import { FavoritesProvider } from '@/features/favorites';
-import { LanguageProvider, type Language } from '@/i18n';
 import { useFavoriteProductLimit } from '../useFavoriteProductLimit';
 
 const { act } = ReactTestRenderer;
 
-async function renderLimit(initialFavoriteIds: string[], language?: Language) {
-  let beforeAdd!: () => boolean;
+type Limit = ReturnType<typeof useFavoriteProductLimit>;
+
+async function renderLimit(initialFavoriteIds: string[]) {
+  let limit!: Limit;
   function Probe() {
-    beforeAdd = useFavoriteProductLimit();
+    limit = useFavoriteProductLimit();
     return null;
   }
 
   await act(async () => {
     ReactTestRenderer.create(
-      <LanguageProvider initialLanguage={language}>
-        <FavoritesProvider initialFavoriteIds={initialFavoriteIds}>
-          <Probe />
-        </FavoritesProvider>
-      </LanguageProvider>,
+      <FavoritesProvider initialFavoriteIds={initialFavoriteIds}>
+        <Probe />
+      </FavoritesProvider>,
     );
   });
 
-  return () => beforeAdd();
+  return () => limit;
 }
 
 const FIVE = ['product:1', 'product:2', 'product:3', 'product:4', 'product:5'];
 
-let alert: jest.SpyInstance;
-
-beforeEach(() => {
-  alert = jest.spyOn(Alert, 'alert').mockImplementation();
-});
-
-afterEach(() => {
-  alert.mockRestore();
-});
-
 test('allows adding while there is room', async () => {
-  const beforeAdd = await renderLimit(FIVE.slice(0, 4));
+  const getLimit = await renderLimit(FIVE.slice(0, 4));
 
-  expect(beforeAdd()).toBe(true);
-  expect(alert).not.toHaveBeenCalled();
+  let allowed!: boolean;
+  await act(async () => {
+    allowed = getLimit().beforeAdd();
+  });
+
+  expect(allowed).toBe(true);
+  expect(getLimit().limitReached).toBe(false);
 });
 
-test('refuses and explains once five products are favorites', async () => {
-  const beforeAdd = await renderLimit(FIVE);
+test('refuses once five products are favorites and flags it', async () => {
+  const getLimit = await renderLimit(FIVE);
 
-  expect(beforeAdd()).toBe(false);
-  expect(alert).toHaveBeenCalledWith(
-    'Favorites are full',
-    'You can keep up to 5 favorites. Remove one to add another.',
-  );
+  let allowed!: boolean;
+  await act(async () => {
+    allowed = getLimit().beforeAdd();
+  });
+
+  expect(allowed).toBe(false);
+  expect(getLimit().limitReached).toBe(true);
+
+  await act(async () => getLimit().dismissLimit());
+
+  expect(getLimit().limitReached).toBe(false);
 });
 
 test('does not count Home items toward the limit', async () => {
-  const beforeAdd = await renderLimit([...FIVE.slice(0, 4), '1', '2']);
+  const getLimit = await renderLimit([...FIVE.slice(0, 4), '1', '2']);
 
-  expect(beforeAdd()).toBe(true);
-});
+  let allowed!: boolean;
+  await act(async () => {
+    allowed = getLimit().beforeAdd();
+  });
 
-test('explains in the active language', async () => {
-  const beforeAdd = await renderLimit(FIVE, 'th');
-
-  beforeAdd();
-
-  expect(alert).toHaveBeenCalledWith(
-    'รายการโปรดเต็มแล้ว',
-    'เก็บรายการโปรดได้สูงสุด 5 รายการ ลบรายการเดิมออกก่อนจึงจะเพิ่มได้',
-  );
+  expect(allowed).toBe(true);
 });

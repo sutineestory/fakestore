@@ -1,26 +1,25 @@
-import { useCallback } from 'react';
-import { Alert } from 'react-native';
+import { useCallback, useState } from 'react';
 
 import { useFavorites } from '@/features/favorites';
-import { useTranslation } from '@/i18n';
 import { countFavoriteProducts, MAX_FAVORITE_PRODUCTS } from '../favoriteLimit';
 
 /**
  * A `beforeAdd` check for favorite buttons: allows adding while there is room,
- * otherwise explains the limit and refuses.
+ * otherwise refuses and sets `limitReached` so the screen can explain why.
  */
 export function useFavoriteProductLimit() {
-  const t = useTranslation();
   const { favoriteIds } = useFavorites();
+  const [limitReached, setLimitReached] = useState(false);
 
-  return useCallback(() => {
+  const beforeAdd = useCallback(() => {
     if (countFavoriteProducts(favoriteIds) < MAX_FAVORITE_PRODUCTS) {
       return true;
     }
-    Alert.alert(
-      t.favorites.fullTitle,
-      t.favorites.fullMessage(MAX_FAVORITE_PRODUCTS),
-    );
+    setLimitReached(true);
     return false;
-  }, [favoriteIds, t]);
+  }, [favoriteIds]);
+
+  const dismissLimit = useCallback(() => setLimitReached(false), []);
+
+  return { beforeAdd, limitReached, dismissLimit };
 }

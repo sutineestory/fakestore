@@ -16,6 +16,7 @@ import { FavoriteIconButton } from '@/features/favorites';
 import { useLanguage, useTranslation } from '@/i18n';
 import type { RootStackScreenProps } from '@/navigation';
 import { makeStyles } from '@/theme';
+import { FavoritesFullSheet } from '../components/FavoritesFullSheet';
 import { ProductRating } from '../components/ProductRating';
 import { formatPrice } from '../formatPrice';
 import { useFavoriteProductLimit } from '../hooks/useFavoriteProductLimit';
@@ -34,7 +35,7 @@ export function ProductDetailScreen({
   const [viewingImage, setViewingImage] = useState(false);
   const openImage = useCallback(() => setViewingImage(true), []);
   const closeImage = useCallback(() => setViewingImage(false), []);
-  const beforeAddFavorite = useFavoriteProductLimit();
+  const { beforeAdd, limitReached, dismissLimit } = useFavoriteProductLimit();
 
   if (!product) {
     return (
@@ -80,7 +81,7 @@ export function ProductDetailScreen({
           <View style={styles.favorite}>
             <FavoriteIconButton
               id={productFavoriteId(product.id)}
-              beforeAdd={beforeAddFavorite}
+              beforeAdd={beforeAdd}
             />
           </View>
         </View>
@@ -105,6 +106,7 @@ export function ProductDetailScreen({
         onClose={closeImage}
         closeLabel={t.productDetail.closeImage}
       />
+      <FavoritesFullSheet visible={limitReached} onClose={dismissLimit} />
     </Screen>
   );
 }

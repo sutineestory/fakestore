@@ -2,6 +2,7 @@
 export const en = {
   common: {
     retry: 'Try again',
+    ok: 'Got it',
   },
   tabs: {
     home: 'Home',

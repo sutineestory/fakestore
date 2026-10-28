@@ -3,6 +3,7 @@ import type { Messages } from './en';
 export const th: Messages = {
   common: {
     retry: 'ลองอีกครั้ง',
+    ok: 'เข้าใจแล้ว',
   },
   tabs: {
     home: 'หน้าแรก',

@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { ActivityIndicator, Alert, Image, Modal, Text } from 'react-native';
+import { ActivityIndicator, Image, Modal, Text } from 'react-native';
 import ReactTestRenderer, {
   type ReactTestInstance,
   type ReactTestRenderer as Renderer,
@@ -112,19 +112,20 @@ test('shows everything about a listed product', async () => {
 test('opens the image full screen and closes it again', async () => {
   const root = await renderDetail(3);
 
-  expect(root.findByType(Modal).props.visible).toBe(false);
+  const viewer = () => root.findAllByType(Modal)[0];
+  expect(viewer().props.visible).toBe(false);
 
   await act(async () => {
     findLabelled(root, 'View larger image').props.onPress();
   });
 
-  expect(root.findByType(Modal).props.visible).toBe(true);
+  expect(viewer().props.visible).toBe(true);
 
   await act(async () => {
     findLabelled(root, 'Close').props.onPress();
   });
 
-  expect(root.findByType(Modal).props.visible).toBe(false);
+  expect(viewer().props.visible).toBe(false);
 });
 
 test('offers an add-to-cart button that does nothing yet', async () => {
@@ -166,16 +167,6 @@ describe('with five favorites already', () => {
     'product:4',
     'product:5',
   ];
-  let alert: jest.SpyInstance;
-
-  beforeEach(() => {
-    alert = jest.spyOn(Alert, 'alert').mockImplementation();
-  });
-
-  afterEach(() => {
-    alert.mockRestore();
-  });
-
   test('refuses a sixth and says why', async () => {
     const root = await renderDetail(6, { initialFavoriteIds: FULL });
 
@@ -183,11 +174,14 @@ describe('with five favorites already', () => {
       findLabelled(root, 'Add to favorites').props.onPress();
     });
 
-    expect(alert).toHaveBeenCalledWith(
-      'Favorites are full',
-      'You can keep up to 5 favorites. Remove one to add another.',
-    );
+    expect(texts(root)).toContain('Favorites are full');
     expect(hasLabel(root, 'Add to favorites')).toBe(true);
+
+    await act(async () => {
+      findButton(root, 'Got it').props.onPress();
+    });
+
+    expect(texts(root)).not.toContain('Favorites are full');
   });
 
   test('still removes one of them', async () => {
@@ -197,7 +191,7 @@ describe('with five favorites already', () => {
       findLabelled(root, 'Remove from favorites').props.onPress();
     });
 
-    expect(alert).not.toHaveBeenCalled();
+    expect(texts(root)).not.toContain('Favorites are full');
     expect(hasLabel(root, 'Add to favorites')).toBe(true);
   });
 });
