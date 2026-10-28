@@ -14,6 +14,7 @@ import { useCart } from '@/features/cart';
 import { useLanguage, useTranslation } from '@/i18n';
 import { makeStyles } from '@/theme';
 import { CartListItem } from '../components/CartListItem';
+import { ProductListSkeleton } from '../components/ProductListSkeleton';
 import { formatPrice } from '../formatPrice';
 import { useCachedProducts } from '../hooks/useCachedProducts';
 import { sumPrices } from '../sumPrices';
@@ -78,14 +79,18 @@ export function CartScreen() {
         }
         ListHeaderComponentStyle={styles.header}
         ListEmptyComponent={
-          <RequestStatus
-            status={ids.length === 0 ? 'success' : status}
-            loadingLabel={t.cart.loading}
-            errorMessage={t.cart.error}
-            retryLabel={t.common.retry}
-            emptyMessage={t.cart.empty}
-            onRetry={retry}
-          />
+          ids.length > 0 && status === 'loading' ? (
+            <ProductListSkeleton count={ids.length} label={t.cart.loading} />
+          ) : (
+            <RequestStatus
+              status={ids.length === 0 ? 'success' : status}
+              loadingLabel={t.cart.loading}
+              errorMessage={t.cart.error}
+              retryLabel={t.common.retry}
+              emptyMessage={t.cart.empty}
+              onRetry={retry}
+            />
+          )
         }
         contentContainerStyle={styles.content}
       />

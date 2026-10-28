@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { ActivityIndicator, Image, Modal, Text } from 'react-native';
+import { Image, Modal, Text } from 'react-native';
 import ReactTestRenderer, {
   type ReactTestInstance,
   type ReactTestRenderer as Renderer,
@@ -18,6 +18,15 @@ import { ProductDetailScreen } from '../ProductDetailScreen';
 jest.mock('../../services/productsService');
 
 const { act } = ReactTestRenderer;
+
+/** Skeleton areas announced as loading; host views only, so each counts once. */
+function loadingAreas(root: ReactTestInstance) {
+  return root.findAll(
+    node =>
+      typeof node.type === 'string' &&
+      node.props.accessibilityRole === 'progressbar',
+  );
+}
 
 const mockFetchProducts = jest.mocked(fetchProducts);
 const mockFetchProduct = jest.mocked(fetchProduct);
@@ -243,14 +252,14 @@ test('fetches a product that is not in the loaded list', async () => {
   expect(texts(root)).toContain('Product 15');
 });
 
-test('shows a labelled spinner while loading', async () => {
+test('shows a labelled skeleton while loading', async () => {
   mockFetchProducts.mockReturnValue(new Promise(() => {}));
 
   const root = await renderDetail(3);
 
-  expect(root.findByType(ActivityIndicator).props.accessibilityLabel).toBe(
-    'Loading the product',
-  );
+  const [skeleton] = loadingAreas(root);
+  expect(skeleton.props.accessibilityLabel).toBe('Loading the product');
+  expect(texts(root)).toEqual([]);
 });
 
 test('offers a retry when the product fails to load', async () => {

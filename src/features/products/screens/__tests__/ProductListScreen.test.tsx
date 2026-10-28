@@ -1,10 +1,4 @@
-import {
-  ActivityIndicator,
-  FlatList,
-  RefreshControl,
-  Text,
-  TextInput,
-} from 'react-native';
+import { FlatList, RefreshControl, Text, TextInput } from 'react-native';
 import ReactTestRenderer, {
   type ReactTestInstance,
   type ReactTestRenderer as Renderer,
@@ -23,6 +17,15 @@ import { ProductListScreen } from '../ProductListScreen';
 jest.mock('../../services/productsService');
 
 const { act } = ReactTestRenderer;
+
+/** Skeleton areas announced as loading; host views only, so each counts once. */
+function loadingAreas(root: ReactTestInstance) {
+  return root.findAll(
+    node =>
+      typeof node.type === 'string' &&
+      node.props.accessibilityRole === 'progressbar',
+  );
+}
 
 const mockFetchProducts = jest.mocked(fetchProducts);
 const mockFetchCategories = jest.mocked(fetchCategories);
@@ -119,16 +122,16 @@ afterEach(async () => {
   jest.useRealTimers();
 });
 
-test('shows a spinner until the first ten products load', async () => {
+test('shows skeleton rows until the first ten products load', async () => {
   const request = nextRequest();
   const root = await renderScreen();
 
   expect(mockFetchProducts).toHaveBeenCalledWith(10);
-  expect(root.findAllByType(ActivityIndicator)).toHaveLength(1);
+  expect(loadingAreas(root)).toHaveLength(1);
 
   await act(async () => request.resolve(makeProducts(1, 10)));
 
-  expect(root.findAllByType(ActivityIndicator)).toHaveLength(0);
+  expect(loadingAreas(root)).toHaveLength(0);
   expect(hasText(root, 'Product 1')).toBe(true);
   expect(hasText(root, '$1.50')).toBe(true);
   expect(hasText(root, 'Product 10')).toBe(true);
@@ -184,11 +187,11 @@ test('loads ten more products at the end of the list', async () => {
   await reachEnd(root);
 
   expect(mockFetchProducts).toHaveBeenLastCalledWith(20);
-  expect(root.findAllByType(ActivityIndicator)).toHaveLength(1);
+  expect(loadingAreas(root)).toHaveLength(1);
 
   await act(async () => more.resolve(makeProducts(1, 20)));
 
-  expect(root.findAllByType(ActivityIndicator)).toHaveLength(0);
+  expect(loadingAreas(root)).toHaveLength(0);
   expect(listedIds(root)).toEqual(makeProducts(1, 20).map(p => p.id));
 });
 
@@ -284,12 +287,12 @@ test('says a search found nothing only once every page is searched', async () =>
   await search(root, 'lamp');
 
   expect(hasText(root, 'No hot deals match “lamp”.')).toBe(false);
-  expect(root.findAllByType(ActivityIndicator)).toHaveLength(1);
+  expect(loadingAreas(root)).toHaveLength(1);
 
   await finishLoading();
 
   expect(hasText(root, 'No hot deals match “lamp”.')).toBe(true);
-  expect(root.findAllByType(ActivityIndicator)).toHaveLength(0);
+  expect(loadingAreas(root)).toHaveLength(0);
 });
 
 test('says what found nothing in the active language', async () => {

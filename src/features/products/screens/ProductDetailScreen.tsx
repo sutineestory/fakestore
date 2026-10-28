@@ -18,6 +18,7 @@ import { FavoriteIconButton } from '@/features/favorites';
 import { useLanguage, useTranslation } from '@/i18n';
 import type { RootStackScreenProps } from '@/navigation';
 import { makeStyles } from '@/theme';
+import { ProductDetailSkeleton } from '../components/ProductDetailSkeleton';
 import { ProductRating } from '../components/ProductRating';
 import { MAX_FAVORITE_PRODUCTS } from '../favoriteLimit';
 import { formatPrice } from '../formatPrice';
@@ -42,6 +43,14 @@ export function ProductDetailScreen({
   const openImage = useCallback(() => setViewingImage(true), []);
   const closeImage = useCallback(() => setViewingImage(false), []);
   const { beforeAdd, limitReached, dismissLimit } = useFavoriteProductLimit();
+
+  if (!product && status === 'loading') {
+    return (
+      <Screen scroll edges={['left', 'right', 'bottom']}>
+        <ProductDetailSkeleton label={t.productDetail.loading} />
+      </Screen>
+    );
+  }
 
   if (!product) {
     return (

@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, Text } from 'react-native';
+import { FlatList, Text } from 'react-native';
 import ReactTestRenderer, {
   type ReactTestInstance,
   type ReactTestRenderer as Renderer,
@@ -17,6 +17,15 @@ import { FavoritesCarousel } from '../FavoritesCarousel';
 jest.mock('../../services/productsService');
 
 const { act } = ReactTestRenderer;
+
+/** Skeleton areas announced as loading; host views only, so each counts once. */
+function loadingAreas(root: ReactTestInstance) {
+  return root.findAll(
+    node =>
+      typeof node.type === 'string' &&
+      node.props.accessibilityRole === 'progressbar',
+  );
+}
 
 const mockFetchProducts = jest.mocked(fetchProducts);
 const mockFetchProduct = jest.mocked(fetchProduct);
@@ -110,14 +119,13 @@ test('fetches favorites the list has not loaded yet', async () => {
   expect(cardIds(root)).toEqual([2, 15]);
 });
 
-test('shows a spinner while favorites load', async () => {
+test('shows placeholder cards while favorites load', async () => {
   mockFetchProducts.mockReturnValue(new Promise(() => {}));
 
   const root = await renderCarousel({ initialFavoriteIds: favoritesOf([3]) });
 
-  expect(root.findByType(ActivityIndicator).props.accessibilityLabel).toBe(
-    'Loading products',
-  );
+  const [skeleton] = loadingAreas(root);
+  expect(skeleton.props.accessibilityLabel).toBe('Loading products');
 });
 
 test('offers a retry when favorites fail to load', async () => {

@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { Button, Stack, Text } from '@/components';
 import { useFavorites } from '@/features/favorites';
 import { useTranslation } from '@/i18n';
-import { useTheme } from '@/theme';
 import { MAX_FAVORITE_PRODUCTS } from '../favoriteLimit';
 import { useCachedProducts } from '../hooks/useCachedProducts';
 import { selectRecentFavoriteProductIds } from '../selectRecentFavoriteProductIds';
+import { FavoritesCarouselSkeleton } from './FavoritesCarouselSkeleton';
 import { FavoritesRow } from './FavoritesRow';
 
 type FavoritesCarouselProps = {
@@ -49,16 +49,10 @@ type CarouselStatusProps = {
 /** Stands in for the cards while there are none to show. */
 function CarouselStatus({ status, onRetry }: CarouselStatusProps) {
   const t = useTranslation();
-  const { colors } = useTheme();
 
   switch (status) {
     case 'loading':
-      return (
-        <ActivityIndicator
-          accessibilityLabel={t.productList.loading}
-          color={colors.primary}
-        />
-      );
+      return <FavoritesCarouselSkeleton label={t.productList.loading} />;
     case 'error':
       return (
         <Stack direction="row" gap="md" align="center">

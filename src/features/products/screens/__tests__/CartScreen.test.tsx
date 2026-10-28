@@ -79,6 +79,20 @@ test('says when the cart is empty and cannot be submitted', async () => {
   ).toMatchObject({ disabled: true });
 });
 
+test('shows a placeholder row per cart item while they load', async () => {
+  mockFetchProducts.mockReturnValue(new Promise(() => {}));
+
+  const root = await renderCart({ initialCartIds: [2, 4, 15] });
+
+  const [skeleton] = root.findAll(
+    node =>
+      typeof node.type === 'string' &&
+      node.props.accessibilityRole === 'progressbar',
+  );
+  expect(skeleton.props.accessibilityLabel).toBe('Loading your cart');
+  expect(listed(root)).toEqual([]);
+});
+
 test('lists the cart like the product list, with a count and total', async () => {
   const root = await renderCart({ initialCartIds: [2, 4] });
 

@@ -17,11 +17,15 @@ import { HotDealsHeader } from '../components/HotDealsHeader';
 import { ProductFilterSheet } from '../components/ProductFilterSheet';
 import { ProductListFooter } from '../components/ProductListFooter';
 import { ProductListItem } from '../components/ProductListItem';
+import { ProductListSkeleton } from '../components/ProductListSkeleton';
 import { ProductSortSheet } from '../components/ProductSortSheet';
 import { useHotDeals } from '../hooks/useHotDeals';
 import type { Product } from '../types';
 
 const keyExtractor = (product: Product) => String(product.id);
+
+// Roughly a screenful under the carousel.
+const LOADING_ROWS = 4;
 
 export function ProductListScreen() {
   const t = useTranslation();
@@ -90,8 +94,13 @@ export function ProductListScreen() {
         }
         ListHeaderComponentStyle={styles.header}
         ListEmptyComponent={
-          // The footer's spinner already shows while more pages load.
-          loadingMore ? undefined : (
+          // The footer's skeletons already show while more pages load.
+          loadingMore ? undefined : status === 'loading' ? (
+            <ProductListSkeleton
+              count={LOADING_ROWS}
+              label={t.productList.loading}
+            />
+          ) : (
             <RequestStatus
               status={status}
               loadingLabel={t.productList.loading}

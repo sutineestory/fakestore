@@ -1,5 +1,6 @@
-import { ActivityIndicator, Text } from 'react-native';
+import { Text } from 'react-native';
 import ReactTestRenderer, {
+  type ReactTestInstance,
   type ReactTestRenderer as Renderer,
 } from 'react-test-renderer';
 
@@ -8,6 +9,15 @@ import { ThemeProvider } from '@/theme';
 import { ProductListFooter } from '../ProductListFooter';
 
 const { act } = ReactTestRenderer;
+
+/** Skeleton areas announced as loading; host views only, so each counts once. */
+function loadingAreas(root: ReactTestInstance) {
+  return root.findAll(
+    node =>
+      typeof node.type === 'string' &&
+      node.props.accessibilityRole === 'progressbar',
+  );
+}
 
 async function renderFooter(
   loadingMore: boolean,
@@ -37,12 +47,12 @@ test('renders nothing between pages', async () => {
   expect(renderer.toJSON()).toBeNull();
 });
 
-test('shows a labelled spinner while the next page loads', async () => {
+test('shows labelled placeholder rows while the next page loads', async () => {
   const renderer = await renderFooter(true, false);
 
-  expect(
-    renderer.root.findByType(ActivityIndicator).props.accessibilityLabel,
-  ).toBe('Loading products');
+  const [skeleton] = loadingAreas(renderer.root);
+  expect(skeleton.props.accessibilityLabel).toBe('Loading products');
+  expect(renderer.root.findAllByType(Text)).toHaveLength(0);
 });
 
 test('explains a failed page and retries on press', async () => {
