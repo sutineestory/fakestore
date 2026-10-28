@@ -11,13 +11,11 @@ import {
   Stack,
   Text,
 } from '@/components';
-import { useFavorites } from '@/features/favorites';
 import { useTranslation } from '@/i18n';
 import { makeStyles } from '@/theme';
 import { FavoritesCarousel } from '../components/FavoritesCarousel';
 import { ProductListFooter } from '../components/ProductListFooter';
 import { ProductListItem } from '../components/ProductListItem';
-import { productFavoriteId } from '../productFavoriteId';
 import { useProducts } from '../ProductsProvider';
 import type { Product } from '../types';
 
@@ -27,7 +25,6 @@ export function ProductListScreen() {
   const t = useTranslation();
   const styles = useStyles();
   const navigation = useNavigation();
-  const { favoriteIds } = useFavorites();
   const {
     status,
     products,
@@ -46,14 +43,8 @@ export function ProductListScreen() {
   );
 
   const renderItem = useCallback<ListRenderItem<Product>>(
-    ({ item }) => (
-      <ProductListItem
-        product={item}
-        isFavorite={favoriteIds.has(productFavoriteId(item.id))}
-        onPress={openProduct}
-      />
-    ),
-    [favoriteIds, openProduct],
+    ({ item }) => <ProductListItem product={item} onPress={openProduct} />,
+    [openProduct],
   );
 
   return (

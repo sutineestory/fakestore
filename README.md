@@ -44,7 +44,7 @@ Metro with `npm start -- --reset-cache`.
   parameter, so each page asks for a larger `?limit=` and appends the products
   it hasn't seen; it stops once a page adds nothing new (the store has 20).
 - **Favorites carousel** at the top of the list: the 10 most recently favorited
-  products, with page dots. Hearts on rows and cards mark favorites.
+  products, with page dots and a heart on each card.
 - **Product detail**: tap a row or card. The Favorite button adds or removes
   the product, with a small heart animation when adding. Products beyond the
   loaded pages (e.g. a favorite after a restart) are fetched by id.

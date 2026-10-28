@@ -58,12 +58,6 @@ function findRows(root: ReactTestInstance, title: string) {
   );
 }
 
-function hasFavoriteMark(row: ReactTestInstance) {
-  return (
-    row.findAll(node => node.props.accessibilityLabel === 'Favorite').length > 0
-  );
-}
-
 function findButton(root: ReactTestInstance, label: string) {
   return root.find(
     node =>
@@ -194,19 +188,15 @@ test('keeps the rows and offers a retry when a page fails', async () => {
   expect(hasText(root, 'Couldn’t load more products.')).toBe(false);
 });
 
-test('shows favorites above the list and marks their rows', async () => {
+test('shows favorites above the list', async () => {
   const root = await renderLoadedScreen({
     initialFavoriteIds: ['product:2', '3'],
   });
 
-  const favorite = findRows(root, 'Product 2');
-  expect(favorite).toHaveLength(2);
-  expect(favorite.every(hasFavoriteMark)).toBe(true);
-
+  // Its card in the carousel, plus its row in the list.
+  expect(findRows(root, 'Product 2')).toHaveLength(2);
   // '3' is a Home placeholder, not product 3.
-  const other = findRows(root, 'Product 3');
-  expect(other).toHaveLength(1);
-  expect(hasFavoriteMark(other[0])).toBe(false);
+  expect(findRows(root, 'Product 3')).toHaveLength(1);
 });
 
 test('invites the user to favorite something when there is nothing yet', async () => {

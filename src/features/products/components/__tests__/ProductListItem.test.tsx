@@ -18,13 +18,11 @@ const PRODUCT = makeProduct(7, {
 });
 
 type RenderOptions = {
-  isFavorite?: boolean;
   onPress?: (id: number) => void;
   language?: Language;
 };
 
 async function renderItem({
-  isFavorite = false,
   onPress = jest.fn(),
   language,
 }: RenderOptions = {}) {
@@ -33,11 +31,7 @@ async function renderItem({
     renderer = ReactTestRenderer.create(
       <ThemeProvider>
         <LanguageProvider initialLanguage={language}>
-          <ProductListItem
-            product={PRODUCT}
-            isFavorite={isFavorite}
-            onPress={onPress}
-          />
+          <ProductListItem product={PRODUCT} onPress={onPress} />
         </LanguageProvider>
       </ThemeProvider>,
     );
@@ -47,13 +41,6 @@ async function renderItem({
 
 function textsOf(root: ReactTestInstance) {
   return root.findAllByType(Text).map(text => text.props.children);
-}
-
-function hasFavoriteMark(root: ReactTestInstance) {
-  return (
-    root.findAll(node => node.props.accessibilityLabel === 'Favorite').length >
-    0
-  );
 }
 
 test('shows the image, title and price', async () => {
@@ -80,9 +67,12 @@ test('writes the price for the active language', async () => {
   expect(textsOf(root)).toContain('US$109.95');
 });
 
-test('marks a favorite with a heart', async () => {
-  expect(hasFavoriteMark(await renderItem({ isFavorite: true }))).toBe(true);
-  expect(hasFavoriteMark(await renderItem({ isFavorite: false }))).toBe(false);
+test('shows no heart; favorites are marked in the carousel', async () => {
+  const root = await renderItem();
+
+  expect(
+    root.findAll(node => node.props.accessibilityLabel === 'Favorite'),
+  ).toHaveLength(0);
 });
 
 test('is one button that reports its product id', async () => {
