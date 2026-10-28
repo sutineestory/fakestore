@@ -168,6 +168,32 @@ test('favorites a product from its detail screen', async () => {
   });
 });
 
+test('keeps favorites after the app restarts', async () => {
+  const first = await renderApp();
+  await press(findTab(first.root, 'Products'));
+  await press(findButton(first.root, 'Product 2'));
+  await press(findButton(first.root, 'Add to favorites'));
+  await act(async () => {
+    first.unmount();
+  });
+
+  const second = await renderApp();
+  await press(findTab(second.root, 'Products'));
+
+  const favoriteCard = second.root.findAll(
+    node =>
+      node.props.accessibilityRole === 'button' &&
+      typeof node.props.onPress === 'function' &&
+      hasText(node, 'Product 2'),
+  );
+  // Its card in the carousel, plus its row in the list.
+  expect(favoriteCard).toHaveLength(2);
+
+  await act(async () => {
+    second.unmount();
+  });
+});
+
 test('stars an item on Home once it is favorited on Details', async () => {
   const renderer = await renderApp();
 

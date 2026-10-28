@@ -2,6 +2,7 @@ import ReactTestRenderer from 'react-test-renderer';
 
 import { ErrorBoundary } from '@/test-utils/ErrorBoundary';
 import { FavoritesProvider, useFavorites } from '../FavoritesProvider';
+import { loadFavoriteIds, saveFavoriteIds } from '../services/favoritesStorage';
 
 const { act } = ReactTestRenderer;
 
@@ -59,6 +60,24 @@ test('toggleFavorite leaves other ids untouched', async () => {
   await toggle(getFavorites, '1');
 
   expect([...getFavorites().favoriteIds]).toEqual(['3']);
+});
+
+test('restores the favorites of an earlier session', async () => {
+  await saveFavoriteIds(['product:2', '1']);
+
+  const getFavorites = await renderFavorites();
+
+  expect([...getFavorites().favoriteIds]).toEqual(['product:2', '1']);
+});
+
+test('saves toggles for the next session', async () => {
+  const getFavorites = await renderFavorites();
+
+  await toggle(getFavorites, 'product:5');
+  await toggle(getFavorites, '2');
+  await toggle(getFavorites, 'product:5');
+
+  await expect(loadFavoriteIds()).resolves.toEqual(['2']);
 });
 
 test('useFavorites throws outside <FavoritesProvider>', async () => {

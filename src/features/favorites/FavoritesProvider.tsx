@@ -3,9 +3,10 @@ import {
   use,
   useCallback,
   useMemo,
-  useState,
   type PropsWithChildren,
 } from 'react';
+
+import { usePersistedFavoriteIds } from './hooks/usePersistedFavoriteIds';
 
 type FavoritesContextValue = {
   favoriteIds: ReadonlySet<string>;
@@ -22,21 +23,23 @@ export function FavoritesProvider({
   children,
   initialFavoriteIds,
 }: FavoritesProviderProps) {
-  const [favoriteIds, setFavoriteIds] = useState<ReadonlySet<string>>(
-    () => new Set(initialFavoriteIds),
-  );
+  const [favoriteIds, setFavoriteIds] =
+    usePersistedFavoriteIds(initialFavoriteIds);
 
-  const toggleFavorite = useCallback((id: string) => {
-    setFavoriteIds(current => {
-      const next = new Set(current);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  }, []);
+  const toggleFavorite = useCallback(
+    (id: string) => {
+      setFavoriteIds(current => {
+        const next = new Set(current);
+        if (next.has(id)) {
+          next.delete(id);
+        } else {
+          next.add(id);
+        }
+        return next;
+      });
+    },
+    [setFavoriteIds],
+  );
 
   const value = useMemo<FavoritesContextValue>(
     () => ({ favoriteIds, toggleFavorite }),
