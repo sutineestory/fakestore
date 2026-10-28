@@ -56,6 +56,12 @@ test('shows the image, title and price', async () => {
   ]);
 });
 
+test('fills its thumbnail with the photo', async () => {
+  const root = await renderItem();
+
+  expect(root.findByType(Image).props.resizeMode).toBe('cover');
+});
+
 test('keeps long titles to two lines', async () => {
   const root = await renderItem();
 

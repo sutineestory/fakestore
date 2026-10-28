@@ -30,7 +30,7 @@ function ProductListItemBase({ product, onPress }: ProductListItemProps) {
         <View style={styles.thumbnail}>
           <Image
             source={{ uri: product.image }}
-            resizeMode="contain"
+            resizeMode="cover"
             style={styles.image}
           />
         </View>
@@ -52,12 +52,13 @@ function ProductListItemBase({ product, onPress }: ProductListItemProps) {
 
 export const ProductListItem = memo(ProductListItemBase);
 
-const useStyles = makeStyles(({ colors, spacing, radii }) => ({
+const useStyles = makeStyles(({ colors, radii }) => ({
   thumbnail: {
     width: THUMBNAIL_SIZE,
     height: THUMBNAIL_SIZE,
-    padding: spacing.xs,
     borderRadius: radii.md,
+    // Clips the photo to the rounded corners.
+    overflow: 'hidden',
     backgroundColor: colors.media,
   },
   image: { flex: 1 },
