@@ -50,6 +50,11 @@ export const en = {
   },
   productDetail: {
     title: 'Product details',
+    loading: 'Loading the product',
+    error: 'Couldn’t load this product.',
+    notFound: 'This product doesn’t exist any more.',
+    rating: (rate: number, count: number) =>
+      `Rated ${rate.toFixed(1)} out of 5 · ${count} reviews`,
   },
   favorites: {
     label: 'Favorite',

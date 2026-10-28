@@ -50,6 +50,10 @@ export const th: Messages = {
   },
   productDetail: {
     title: 'รายละเอียดสินค้า',
+    loading: 'กำลังโหลดสินค้า',
+    error: 'โหลดสินค้านี้ไม่สำเร็จ',
+    notFound: 'ไม่พบสินค้านี้แล้ว',
+    rating: (rate, count) => `คะแนน ${rate.toFixed(1)} จาก 5 · ${count} รีวิว`,
   },
   favorites: {
     label: 'รายการโปรด',

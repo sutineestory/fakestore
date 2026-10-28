@@ -151,6 +151,23 @@ test('lists products from the store on the Products tab', async () => {
   });
 });
 
+test('favorites a product from its detail screen', async () => {
+  const renderer = await renderApp();
+
+  await press(findTab(renderer.root, 'Products'));
+  await press(findButton(renderer.root, 'Product 2'));
+
+  expect(hasText(renderer.root, 'Description of product 2.')).toBe(true);
+
+  await press(findButton(renderer.root, 'Add to favorites'));
+
+  expect(hasText(renderer.root, 'Remove from favorites')).toBe(true);
+
+  await act(async () => {
+    renderer.unmount();
+  });
+});
+
 test('stars an item on Home once it is favorited on Details', async () => {
   const renderer = await renderApp();
 
