@@ -1,5 +1,6 @@
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { CartProvider } from '@/features/cart';
 import { FavoritesProvider } from '@/features/favorites';
 import { ProductsProvider } from '@/features/products';
 import { LanguageProvider } from '@/i18n';
@@ -13,8 +14,10 @@ export default function App() {
         <LanguageProvider>
           <FavoritesProvider>
             <ProductsProvider>
-              <ThemedStatusBar />
-              <RootNavigator />
+              <CartProvider>
+                <ThemedStatusBar />
+                <RootNavigator />
+              </CartProvider>
             </ProductsProvider>
           </FavoritesProvider>
         </LanguageProvider>
