@@ -43,6 +43,7 @@ export const th: Messages = {
     openSettings: 'เปิดการตั้งค่า',
   },
   productList: {
+    hotDeals: 'ดีลเด็ด',
     favorites: 'รายการโปรด',
     favoritesEmpty: 'กด “เพิ่มในรายการโปรด” ที่หน้าสินค้าเพื่อเก็บไว้ที่นี่',
     favoritesError: 'โหลดรายการโปรดไม่สำเร็จ',

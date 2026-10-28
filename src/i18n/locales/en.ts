@@ -43,6 +43,7 @@ export const en = {
     openSettings: 'Open Settings',
   },
   productList: {
+    hotDeals: 'Hot deals',
     favorites: 'Favorites',
     favoritesEmpty: 'Tap “Add to favorites” on a product to keep it here.',
     favoritesError: 'Couldn’t load your favorites.',

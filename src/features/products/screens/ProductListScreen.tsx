@@ -9,6 +9,7 @@ import {
   RequestStatus,
   Screen,
   Stack,
+  Text,
 } from '@/components';
 import { useFavorites } from '@/features/favorites';
 import { useTranslation } from '@/i18n';
@@ -66,6 +67,9 @@ export function ProductListScreen() {
           <Stack gap="lg">
             <FavoritesCarousel onPressProduct={openProduct} />
             <Divider />
+            <Text variant="heading" accessibilityRole="header">
+              {t.productList.hotDeals}
+            </Text>
           </Stack>
         }
         ListHeaderComponentStyle={styles.header}

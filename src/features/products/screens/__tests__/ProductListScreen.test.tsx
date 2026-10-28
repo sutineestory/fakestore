@@ -217,6 +217,25 @@ test('invites the user to favorite something when there is nothing yet', async (
   ).toBe(true);
 });
 
+test('titles the product rows as hot deals', async () => {
+  const root = await renderLoadedScreen();
+
+  const headers = root
+    .findAll(
+      node =>
+        node.props.accessibilityRole === 'header' &&
+        typeof node.type === 'string',
+    )
+    .map(node => node.props.accessibilityLabel ?? node.props.children);
+  expect(headers).toContain('Hot deals');
+});
+
+test('titles the hot deals in the active language', async () => {
+  const root = await renderLoadedScreen({ language: 'th' });
+
+  expect(hasText(root, 'ดีลเด็ด')).toBe(true);
+});
+
 test('opens a product when its row is pressed', async () => {
   const root = await renderLoadedScreen();
 
