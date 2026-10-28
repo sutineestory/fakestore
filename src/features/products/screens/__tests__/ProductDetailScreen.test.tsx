@@ -87,9 +87,9 @@ test('shows everything about a listed product', async () => {
     "men's clothing",
     'Product #3',
     'Mens Cotton Jacket',
+    '4.7 (500)',
     '$55.99',
     'Add to favorites',
-    '4.7 (500)',
     'Great outerwear jackets.',
   ]);
   expect(mockFetchProduct).not.toHaveBeenCalled();

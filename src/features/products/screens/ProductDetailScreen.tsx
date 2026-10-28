@@ -54,17 +54,17 @@ export function ProductDetailScreen({
             </Text>
           </Stack>
           <Text variant="heading">{product.title}</Text>
-          <Text variant="heading" color="primary">
-            {formatPrice(product.price, language)}
-          </Text>
+          <Stack direction="row" justify="space-between" align="center">
+            <ProductRating rating={product.rating} />
+            <Text variant="heading" color="primary">
+              {formatPrice(product.price, language)}
+            </Text>
+          </Stack>
         </Stack>
 
         <FavoriteButton id={productFavoriteId(product.id)} />
 
-        <Stack gap="sm">
-          <ProductRating rating={product.rating} />
-          <Text>{product.description}</Text>
-        </Stack>
+        <Text>{product.description}</Text>
       </Stack>
     </Screen>
   );
