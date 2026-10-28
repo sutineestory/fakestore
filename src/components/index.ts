@@ -8,6 +8,7 @@ export { Card, type CardProps } from './Card';
 export { Divider } from './Divider';
 export { Icon, type IconProps } from './Icon';
 export { ListSeparator } from './ListSeparator';
+export { PageDots, type PageDotsProps } from './PageDots';
 export { RefreshControl } from './RefreshControl';
 export { RequestStatus, type RequestStatusProps } from './RequestStatus';
 export { Screen, type ScreenProps } from './Screen';

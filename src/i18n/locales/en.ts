@@ -43,6 +43,9 @@ export const en = {
     openSettings: 'Open Settings',
   },
   productList: {
+    favorites: 'Favorites',
+    favoritesEmpty: 'Tap “Add to favorites” on a product to keep it here.',
+    favoritesError: 'Couldn’t load your favorites.',
     loading: 'Loading products',
     error: 'Couldn’t load the products.',
     empty: 'No products yet.',

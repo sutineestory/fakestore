@@ -3,14 +3,17 @@ import { useCallback } from 'react';
 import { FlatList, type ListRenderItem } from 'react-native';
 
 import {
+  Divider,
   ListSeparator,
   RefreshControl,
   RequestStatus,
   Screen,
+  Stack,
 } from '@/components';
 import { useFavorites } from '@/features/favorites';
 import { useTranslation } from '@/i18n';
 import { makeStyles } from '@/theme';
+import { FavoritesCarousel } from '../components/FavoritesCarousel';
 import { ProductListFooter } from '../components/ProductListFooter';
 import { ProductListItem } from '../components/ProductListItem';
 import { productFavoriteId } from '../productFavoriteId';
@@ -59,6 +62,13 @@ export function ProductListScreen() {
         keyExtractor={keyExtractor}
         renderItem={renderItem}
         ItemSeparatorComponent={ListSeparator}
+        ListHeaderComponent={
+          <Stack gap="lg">
+            <FavoritesCarousel onPressProduct={openProduct} />
+            <Divider />
+          </Stack>
+        }
+        ListHeaderComponentStyle={styles.header}
         ListEmptyComponent={
           <RequestStatus
             status={status}
@@ -89,4 +99,5 @@ export function ProductListScreen() {
 
 const useStyles = makeStyles(({ spacing }) => ({
   content: { padding: spacing.lg },
+  header: { paddingBottom: spacing.lg },
 }));

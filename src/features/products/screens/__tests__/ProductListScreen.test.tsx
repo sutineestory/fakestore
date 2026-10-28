@@ -48,8 +48,9 @@ function hasText(root: ReactTestInstance, text: string) {
   return root.findAllByType(Text).some(node => node.props.children === text);
 }
 
-function findRow(root: ReactTestInstance, title: string) {
-  return root.find(
+/** Every pressable showing `title`: its list row, plus its card if favorited. */
+function findRows(root: ReactTestInstance, title: string) {
+  return root.findAll(
     node =>
       node.props.accessibilityRole === 'button' &&
       typeof node.props.onPress === 'function' &&
@@ -193,20 +194,34 @@ test('keeps the rows and offers a retry when a page fails', async () => {
   expect(hasText(root, 'Couldn’t load more products.')).toBe(false);
 });
 
-test('marks favorited products, not Home items with the same number', async () => {
+test('shows favorites above the list and marks their rows', async () => {
   const root = await renderLoadedScreen({
     initialFavoriteIds: ['product:2', '3'],
   });
 
-  expect(hasFavoriteMark(findRow(root, 'Product 2'))).toBe(true);
-  expect(hasFavoriteMark(findRow(root, 'Product 3'))).toBe(false);
+  const favorite = findRows(root, 'Product 2');
+  expect(favorite).toHaveLength(2);
+  expect(favorite.every(hasFavoriteMark)).toBe(true);
+
+  // '3' is a Home placeholder, not product 3.
+  const other = findRows(root, 'Product 3');
+  expect(other).toHaveLength(1);
+  expect(hasFavoriteMark(other[0])).toBe(false);
+});
+
+test('invites the user to favorite something when there is nothing yet', async () => {
+  const root = await renderLoadedScreen();
+
+  expect(
+    hasText(root, 'Tap “Add to favorites” on a product to keep it here.'),
+  ).toBe(true);
 });
 
 test('opens a product when its row is pressed', async () => {
   const root = await renderLoadedScreen();
 
   await act(async () => {
-    findRow(root, 'Product 4').props.onPress();
+    findRows(root, 'Product 4')[0].props.onPress();
     jest.runOnlyPendingTimers();
   });
 

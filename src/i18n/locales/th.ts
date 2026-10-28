@@ -43,6 +43,9 @@ export const th: Messages = {
     openSettings: 'เปิดการตั้งค่า',
   },
   productList: {
+    favorites: 'รายการโปรด',
+    favoritesEmpty: 'กด “เพิ่มในรายการโปรด” ที่หน้าสินค้าเพื่อเก็บไว้ที่นี่',
+    favoritesError: 'โหลดรายการโปรดไม่สำเร็จ',
     loading: 'กำลังโหลดสินค้า',
     error: 'โหลดสินค้าไม่สำเร็จ',
     empty: 'ยังไม่มีสินค้า',
